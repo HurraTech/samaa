@@ -39,7 +39,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import TextField from '@material-ui/core/TextField';
-import { JAWHAR_API, JAWHAR_API } from '../constants';
+import { JAWHAR_API } from '../constants';
 
 const styles = theme => ({
     root: {

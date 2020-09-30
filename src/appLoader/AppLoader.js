@@ -15,7 +15,7 @@ import Chip from '@material-ui/core/Chip';
 import FaceIcon from '@material-ui/icons/Face';
 import RunningIcon from '@material-ui/icons/CheckCircle';
 import Iframe from 'react-iframe';
-import { JAWHAR_NEW_API, APP_RUNNER_HOSTNAME } from '../constants';
+import { JAWHAR_API } from '../constants';
 
 const styles = theme => ({
     root: {
@@ -111,7 +111,7 @@ class AppLoader extends React.Component {
         const { classes } = this.props;
         return (
             <Iframe
-            url={`${JAWHAR_NEW_API}/apps/${this.state.auid}/webapp/`}
+            url={`${JAWHAR_API}/apps/${this.state.auid}/webapp/`}
             width="100%"
             height="100vh"
             display="initial"

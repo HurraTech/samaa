@@ -49,7 +49,7 @@ import {
 import blackThemeFile from './themes/black';
 import HomePage from './home/HomePage';
 import AppLoader from './appLoader/AppLoader';
-import { JAWHAR_API, JAWHAR_NEW_API  } from './constants';
+import { JAWHAR_API  } from './constants';
 import FilePreview from './components/FilePreview';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -255,7 +255,7 @@ class App extends React.Component {
     {
        this.setState({pendingSourcesRequest: true})
        axios
-       .get(`${JAWHAR_NEW_API}/sources`)
+       .get(`${JAWHAR_API}/sources`)
        .then(res => {
            const response = res.data;
            this.setState({ appReady: true, sources: response, pendingSourcesRequest: false  })
@@ -266,7 +266,7 @@ class App extends React.Component {
    {
       this.setState({pendingAppsRequest: true})
       axios
-       .get(`${JAWHAR_NEW_API}/apps`)
+       .get(`${JAWHAR_API}/apps`)
        .then(res => {
            const response = res.data;
            this.setState({ apps: response, pendingAppsRequest: false })

@@ -39,7 +39,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import TextField from '@material-ui/core/TextField';
-import { JAWHAR_API, JAWHAR_NEW_API } from '../constants';
+import { JAWHAR_API, JAWHAR_API } from '../constants';
 
 const styles = theme => ({
     root: {
@@ -188,7 +188,7 @@ class SettingsPage extends React.Component {
         let source_id = source.ID
         currentSources.find(s => s.ID === source_id).Status = "mounting"
         this.setState({sources: currentSources}, () => {
-            axios.post(`${JAWHAR_NEW_API}/sources/${source.Type}/${source_id}/mount`)
+            axios.post(`${JAWHAR_API}/sources/${source.Type}/${source_id}/mount`)
         })
     }
 
@@ -196,7 +196,7 @@ class SettingsPage extends React.Component {
         var currentSources = [...this.state.sources]
         currentSources.find(s => s.ID === source.ID).IndexStatus = "pausing"
         this.setState({sources: currentSources}, () => {
-            axios.post(`${JAWHAR_NEW_API}/sources/${source.Type}/${source.ID}/pauseIndex`)
+            axios.post(`${JAWHAR_API}/sources/${source.Type}/${source.ID}/pauseIndex`)
         })
     }
 
@@ -204,7 +204,7 @@ class SettingsPage extends React.Component {
         var currentSources = [...this.state.sources]
         currentSources.find(s => s.ID === source.ID).IndexStatus = "resuming"
         this.setState({sources: currentSources}, () => {
-            axios.post(`${JAWHAR_NEW_API}/sources/${source.Type}/${source.ID}/resumeIndex`)
+            axios.post(`${JAWHAR_API}/sources/${source.Type}/${source.ID}/resumeIndex`)
         })
     }
 
@@ -217,7 +217,7 @@ class SettingsPage extends React.Component {
         var currentSources = [...this.state.sources]
         currentSources.find(s => s.ID === source.ID).IndexStatus = "deleting"
         this.setState({sources: currentSources}, () => {
-            axios.delete(`${JAWHAR_NEW_API}/sources/${source.Type}/${source.ID}/index`)
+            axios.delete(`${JAWHAR_API}/sources/${source.Type}/${source.ID}/index`)
         })
     }
 
@@ -239,7 +239,7 @@ class SettingsPage extends React.Component {
         var currentSources = [...this.state.sources]
         currentSources.find(s => s.ID === source.ID).IndexStatus = "deleting"
         this.setState({sources: currentSources}, () => {
-            axios.delete(`${JAWHAR_NEW_API}/sources/${source.Type}/${source.ID}/index`)
+            axios.delete(`${JAWHAR_API}/sources/${source.Type}/${source.ID}/index`)
         })
     }
 
@@ -276,7 +276,7 @@ class SettingsPage extends React.Component {
         var currentSources = [...this.state.sources]
         currentSources.find(s => s.ID === source_id).Status = "unmounting"
         this.setState({sources: currentSources}, () => {
-            axios.post(`${JAWHAR_NEW_API}/sources/${source_type}/${source_id}/unmount`)
+            axios.post(`${JAWHAR_API}/sources/${source_type}/${source_id}/unmount`)
         })
 
     }
@@ -309,7 +309,7 @@ class SettingsPage extends React.Component {
         currentSources.find(s => s.ID === this.state.selectedSource.ID).IndexStatus = "creating"
         this.setState({sources: currentSources}, () => {
             axios
-            .post(`${JAWHAR_NEW_API}/sources/${this.state.selectedSource.Type}/${this.state.selectedSource.ID}/index`, data)
+            .post(`${JAWHAR_API}/sources/${this.state.selectedSource.Type}/${this.state.selectedSource.ID}/index`, data)
             .then(res => {
                 this.setState({
                     indexDialogOpen: false,
@@ -627,7 +627,7 @@ class SettingsPage extends React.Component {
                                                                 Cancel
                                                             </Button>
                                                         </Tooltip>)
-                                                    }                                                    
+                                                    }
                                                     {source.IndexStatus === "deleting"  && (
                                                         <CircularProgress className={classes.progress} size={20} />
                                                     )}

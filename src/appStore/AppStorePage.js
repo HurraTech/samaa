@@ -23,7 +23,7 @@ import AppBar from '@material-ui/core/AppBar';
 import SearchIcon from '@material-ui/icons/Search';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { JAWHAR_NEW_API  } from '../constants';
+import { JAWHAR_API  } from '../constants';
 import Utils from '../utils';
 
 const styles = theme => ({
@@ -187,7 +187,7 @@ class AppStorePage extends React.Component {
 
     getStoreApplications = () => {
         axios
-        .get(`${JAWHAR_NEW_API}/apps/store`)
+        .get(`${JAWHAR_API}/apps/store`)
         .then(res => {
             const response = res.data;
             this.setState({ apps: response })
@@ -203,7 +203,7 @@ class AppStorePage extends React.Component {
 
     installApp = app_id => () => {
         axios
-        .post(`${JAWHAR_NEW_API}/apps/${app_id}`)
+        .post(`${JAWHAR_API}/apps/${app_id}`)
         .then(res => {
             this.getStoreApplications()
         })

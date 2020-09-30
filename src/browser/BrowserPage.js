@@ -8,7 +8,7 @@ import FilePreview from '../components/FilePreview';
 import BrowserTable from './BroswerTable';
 import ProgressIndicator from '../components/ProgressIndicator';
 import { withRouter } from 'react-router-dom'
-import { JAWHAR_API, JAWHAR_NEW_API  } from '../constants';
+import { JAWHAR_API  } from '../constants';
 
 const styles = theme => ({
   paper: {
@@ -134,8 +134,8 @@ class BrowserPage extends React.Component {
   browse() {
     return new Promise((resolve, reject) => {
       this.setState({isAjaxInProgress: true}, () => {
-        console.log("Making request to ", JAWHAR_NEW_API, this.state.path)
-        axios.get(`${JAWHAR_NEW_API}/${this.state.path}`).then(res => {
+        console.log("Making request to ", JAWHAR_API, this.state.path)
+        axios.get(`${JAWHAR_API}/${this.state.path}`).then(res => {
           const response = res.data;
           console.log("Response", response)
           this.setState(

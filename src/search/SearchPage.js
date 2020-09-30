@@ -9,7 +9,7 @@ import FilePreview from '../components/FilePreview';
 import SearchResultsTable from './SearchResultsTable';
 import ProgressIndicator from '../components/ProgressIndicator';
 import QueryString from 'query-string';
-import { JAWHAR_API, JAWHAR_NEW_API  } from '../constants';
+import { JAWHAR_API  } from '../constants';
 import {FormControl, InputLabel, Input, FormHelperText} from '@material-ui/core';
 import { Typography, Select, MenuItem, List, ListItem } from '@material-ui/core'
 
@@ -151,7 +151,7 @@ class Content extends React.Component {
     if (query) {
       return new Promise((resolve, reject) => {
         axios
-          .post(`${JAWHAR_NEW_API}/sources/${this.props.selectSourceType}/${this.props.selectSourceID}/search?q=${query}&from=${from}&to=${to}`)
+          .post(`${JAWHAR_API}/sources/${this.props.selectSourceType}/${this.props.selectSourceID}/search?q=${query}&from=${from}&to=${to}`)
           .then(res => {
             const response = res.data;
             this.setState(

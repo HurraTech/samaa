@@ -17,7 +17,7 @@ import FaceIcon from '@material-ui/icons/Face';
 import RunningIcon from '@material-ui/icons/CheckCircle';
 import Utils from '../utils';
 import {Pie, HorizontalBar} from 'react-chartjs-2';
-import { JAWHAR_NEW_API  } from '../constants';
+import { JAWHAR_API  } from '../constants';
 
 
 const styles = theme => ({
@@ -296,7 +296,7 @@ class HomePage extends React.Component {
 
     getApplications = () => {
         axios
-        .get(`${JAWHAR_NEW_API}/apps`)
+        .get(`${JAWHAR_API}/apps`)
         .then(res => {
             const response = res.data;
             this.setState({ apps: response })
@@ -308,7 +308,7 @@ class HomePage extends React.Component {
         currentApps.find(a => a.UniqueID === app_id).status = "deleting"
         this.setState({apps: currentApps}, () => {
           axios
-           .delete(`${JAWHAR_NEW_API}/apps/${app_id}`)
+           .delete(`${JAWHAR_API}/apps/${app_id}`)
            .then(res => {
                this.getApplications()
            })

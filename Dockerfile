@@ -5,7 +5,7 @@ WORKDIR /home/node/samaa
 
 # Install deps
 COPY ./package.json .
-COPY ./package-lock.json .
+COPY ./npm-shrinkwrap.json .
 RUN npm install --production
 
 # Build app

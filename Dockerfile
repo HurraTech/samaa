@@ -5,7 +5,7 @@ WORKDIR /home/node/samaa
 
 # Install deps
 COPY ./package.json .
-COPY ./package-lock.json .
+COPY ./npm-shrinkwrap.json .
 RUN npm install --production
 
 # Build app
@@ -16,6 +16,6 @@ RUN npm upgrade caniuse-lite browserslist
 
 ############# RUN-TIME ################
 FROM nginx:1.16-alpine
-WORKDIR /opt/hurracloud/samaa
+WORKDIR /opt/samaa/html
 COPY --from=build /home/node/samaa/build .
 COPY nginx.conf /etc/nginx/nginx.conf

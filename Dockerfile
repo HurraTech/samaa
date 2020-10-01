@@ -14,8 +14,8 @@ RUN npm run-script build
 RUN npm upgrade caniuse-lite browserslist
 
 
-############# RUN-TIME ################
+############# RUN-TIME IMAGE ###########
 FROM nginx:1.16-alpine
 WORKDIR /opt/samaa/html
 COPY --from=build /home/node/samaa/build .
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx-docker.conf /etc/nginx/nginx.conf

@@ -223,8 +223,8 @@ class HomePage extends React.Component {
 	       dataset.datasets[0].data = [Utils.humanFileSizeGBRaw(source.used), Utils.humanFileSizeGBRaw(source.free)]
            if (source.Type == "internal")
            {
-              var indexedSources = sources.filter(s => s.index !== null);
-              var indexSizes = indexedSources.map(s => Utils.humanFileSizeGBRaw(s.index.size))
+              var indexedSources = sources.filter(s => s.IndexStatus !== "");
+              var indexSizes = indexedSources.map(s => Utils.humanFileSizeGBRaw(s.IndexSizeBytes))
               var totalIndexSize = indexSizes.reduce((a,b) => parseInt(a)+ parseInt(b), 0)
               dataset.labels.push("Indices Data (GB)")
               dataset.datasets[0].data.push(totalIndexSize)
@@ -377,9 +377,9 @@ class HomePage extends React.Component {
 				         	</Grid>
 				         	<Grid item xs={12} className={classes.selectDeviceGridItem}>
 							  <Select value={this.state.selectedChartSource}  onChange={(event) => this.changeChartStorage(event.target.value) }>
-                      			{this.state.sources.filter(s => s.status == "mounted").map((source, index) => {
+                      			{this.state.sources.filter(s => s.Status == "mounted").map((source, index) => {
 									return (
-	                               	 <MenuItem value={source.id} >{source.name}</MenuItem>)
+	                               	 <MenuItem value={source.ID} >{source.Caption}</MenuItem>)
 									})
 							    }
         					  </Select>

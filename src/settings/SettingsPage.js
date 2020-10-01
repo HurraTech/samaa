@@ -546,7 +546,7 @@ class SettingsPage extends React.Component {
                                                 <TableCell align="left"  className={classNames(classes.bodyCell, classes.actionsCell)}>
                                                 <div style={{width: "150px", float: 'left', minHeight: '1px'}}>
                                                     { (() => {
-                                                        if (source.Status == "mounted")
+                                                        if (source.Status == "mounted" && source.Type != "internal")
                                                             return <Tooltip title="Unmounting the drive will make it inaccessible.">
                                                                         <Button variant="outline" color="primary" size="small" onClick={() => {this.handleUnmountClick(source)} }>
                                                                             {source.Drive.DriveType != "CloudDrive" && <UnmountIcon className={classes.leftIcon}></UnmountIcon>}
@@ -572,7 +572,7 @@ class SettingsPage extends React.Component {
                                                                             {source.Drive.DriveType != "CloudDrive" ? "Mount" : "Reconnect"}
                                                                         </Button></span>
                                                                     </Tooltip>
-                                                        else if (source.Drive.DriveType != "internal")
+                                                        else if (source.Type != "internal")
                                                             return <CircularProgress className={classes.progress} size={20} />
                                                         })()
                                                     }

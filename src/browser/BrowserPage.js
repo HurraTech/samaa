@@ -140,7 +140,7 @@ class BrowserPage extends React.Component {
           console.log("Response", response)
           this.setState(
             {
-              items: response.content,
+              items: response.content || [],
               isInlineViewerOpen: false,
               isPreviewOpen: false,
               isAjaxInProgress: false

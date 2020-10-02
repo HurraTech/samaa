@@ -251,7 +251,8 @@ class App extends React.Component {
   }
 
   refreshData = (msg, data) => {
-    if (! this.state.pendingSourcesRequest)
+
+    if (! this.state.pendingSourcesRequest && (window.location.pathname.startsWith("/manage") || !this.state.appReady ))
     {
        this.setState({pendingSourcesRequest: true})
        axios
@@ -262,7 +263,7 @@ class App extends React.Component {
        });
     }
 
-   if (! this.state.pendingAppsRequest)
+   if (! this.state.pendingAppsRequest && window.location.pathname == "/")
    {
       this.setState({pendingAppsRequest: true})
       axios
@@ -273,7 +274,7 @@ class App extends React.Component {
        });
    }
 
-   if (! this.state.pendingStatsRequest)
+   if (! this.state.pendingStatsRequest && window.location.pathname == "/" )
    {
       this.setState({pendingStatsRequest: true})
       axios

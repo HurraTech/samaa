@@ -254,9 +254,10 @@ class App extends React.Component {
 
     if (! this.state.pendingSourcesRequest && (window.location.pathname.startsWith("/manage") || !this.state.appReady ))
     {
+       var shouldRefresh = window.location.pathname.startsWith("/manage")
        this.setState({pendingSourcesRequest: true})
        axios
-       .get(`${JAWHAR_API}/sources`)
+       .get(`${JAWHAR_API}/sources?refresh=${shouldRefresh}`)
        .then(res => {
            const response = res.data;
            this.setState({ appReady: true, sources: response, pendingSourcesRequest: false  })

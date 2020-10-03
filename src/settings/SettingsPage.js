@@ -27,6 +27,9 @@ import AlertDialog from '../components/AlertDialog'
 import PauseIcon from '@material-ui/icons/Pause'
 import ResumeIcon from '@material-ui/icons/PlayArrowRounded'
 import DeleteIcon from '@material-ui/icons/DeleteRounded'
+import FileCopy from '@material-ui/icons/FileCopy'
+
+import BuildIcon from '@material-ui/icons/BuildRounded'
 import CancelIcon from '@material-ui/icons/CancelPresentation'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import NewWindow from 'react-new-window'
@@ -99,6 +102,10 @@ const styles = theme => ({
     },
 
 
+    driveRow: {
+        backgroundColor: '#ededed',
+    },
+
     tableHeader: {
         backgroundColor: theme.palette.grey[900],
         color: 'white',
@@ -144,6 +151,10 @@ const styles = theme => ({
         padding: '0px',
     },
 
+    toolsCell: {
+        width:'30px'
+    },
+
     indexTools: {
         float: 'right',
         clear: 'both'
@@ -154,6 +165,14 @@ const styles = theme => ({
         marginLeft: theme.spacing.unit * 5,
         padding:'2px'
       },
+
+      dialogContent: {
+          padding:0,
+          lineHeight: "25px",
+          fontFamily: "'Courier New', Courier, monospace",
+          marginTop: "-12px",
+          fontSize: "14px",
+      }
 
 });
 class SettingsPage extends React.Component {
@@ -168,7 +187,10 @@ class SettingsPage extends React.Component {
             unmountAlertOpen: false,
             addDialogOpen: false,
             googleAuthConsentOpen: false,
-            consentFlowState: ""
+            consentFlowState: "",
+            toolDialogOpen: false,
+            toolDialogState: "",
+            drives: [],
         }
     }
 
@@ -331,9 +353,10 @@ class SettingsPage extends React.Component {
 
     /* ---------- Update Sources --------- */
     componentDidUpdate = (prevProps, prevState, snapshot) => {
-        if (JSON.stringify(this.props.sources) != JSON.stringify(prevProps.sources)) {
+        if (JSON.stringify(this.props.drives) != JSON.stringify(prevProps.drives)) {
             this.setState({
-                sources: this.props.sources
+                sources: this.props.sources,
+                drives: this.props.drives,
             }, () => {
                 this.forceUpdate()
                 $(document).ready(function() {
@@ -405,7 +428,7 @@ class SettingsPage extends React.Component {
     /* ---------- Render --------- */
     render() {
         const { classes } = this.props;
-        const { sources, indexDialogOpen, selectedSource } = this.state
+        const {  indexDialogOpen, selectedSource } = this.state
         return (
             <div>
                 {this.state.googleAuthConsentOpen && this.currentAuthWindow}
@@ -496,6 +519,86 @@ class SettingsPage extends React.Component {
 
                 </Dialog>
 
+                <Dialog onClose={() => { this.setState({ toolDialogOpen: false })}}
+                        open={this.state.toolDialogOpen}
+                        maxWidth="sm"
+                        fullWidth>
+                    {this.state.toolDialogState == "drives_tool_menu" && (<><DialogTitle>Advanced Tools</DialogTitle>
+                        <DialogContent>
+                        <DialogContentText className={classes.dialogContent}>
+                            Serial Number: {this.state.selectedSource.SerialNumber}<br/>
+                        </DialogContentText>
+                        <List>
+                            <ListItem button onClick={() => this.setState({toolDialogState: "format_disk"}) }>
+                                <ListItemAvatar>
+                                    <Avatar><span class="fas fa-eraser" /></Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary="Format Disk" secondary="Erise drive completely and re-format it" />
+                            </ListItem>
+                        </List></DialogContent></>)}
+                    {this.state.toolDialogState == "partitions_tool_menu" && (<><DialogTitle>Advanced Tools</DialogTitle>
+                        <DialogContent>
+                        <DialogContentText className={classes.dialogContent}>
+                            Serial Number: {this.state.selectedSource.Drive.SerialNumber}<br/>
+                            Partition:  {this.state.selectedSource.Type != "internal" ? this.state.selectedSource.Type.DeviceFile : "Internal Storage"}<br />
+                            Label:  {this.state.selectedSource.Caption}<br/>
+                        </DialogContentText>
+                        <List>
+                            {this.state.selectedSource.Type != "internal" && <ListItem button onClick={() => this.setState({toolDialogState: "format"}) }>
+                                <ListItemAvatar>
+                                    <Avatar><span class="fas fa-eraser" /></Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary="Format" secondary="Erase and re-format the partition" />
+                            </ListItem>}
+                            <ListItem button onClick={this.openGoogleAuthConsent}>
+                                <ListItemAvatar>
+                                    <Avatar><FileCopy /></Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary="Copy Contents" secondary="Copy all contents to another disk" />
+                            </ListItem>
+                            {this.state.selectedSource.Type != "internal" && <ListItem button onClick={this.openGoogleAuthConsent}>
+                                <ListItemAvatar>
+                                    <Avatar><span class="fas fa-archive" /></Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary="Backup" secondary="Backup all contents to another disk in compressed archive format" />
+                            </ListItem>}
+                        </List></DialogContent></>)}
+                    {this.state.toolDialogState == "format_disk" && (
+                    <><DialogTitle id="simple-dialog-title">Format {this.state.selectedSource.DeviceFile}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                WARNING: This will erase all the contents of the partition
+                            </DialogContentText>
+                            <List>
+                                <ListItem>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        label="Authorization Code"
+                                        value={this.state.googleAuthCode}
+                                        onChange={(e) => { this.setState({googleAuthCode: e.target.value}) }}
+                                        />
+                                </ListItem>
+                            </List>
+                            <DialogActions>
+                                <Button onClick={this.handleAddDialogClose} color="secondary">
+                                Cancel
+                                </Button>
+                                <Button onClick={this.addUpdateGoogleAccount} color="secondary">
+                                Add Account
+                                </Button>
+                            </DialogActions>
+                            <DialogContentText variant="body2" align="justify">
+                                <b>Why do I need authorization code?</b> The authorization code is needed to allow your HurraCloud Device to access your Google Drive files, therefore enable features such as files sync and backups. <br/><br/>
+                                <b>But why enter it manually?</b> You may have seen other applications that automatically completes the consent process without requiring you to copy/paste the code. This is because they use server-side application to retrieve the code from Google. But since HurraCloud is all about privacy, we do not use any servers on the internet. In fact, the entire process completely happens at your HurraCloud Device (and of course, Google's login server)
+                            </DialogContentText>
+                        </DialogContent>
+                    </>)
+                    }
+
+                </Dialog>
+
+
                 <Grid container direction="column">
                     <Grid container direction="row" spacing={10} xs={12} justify="space-between">
                     <Grid item xs={12}>
@@ -517,148 +620,184 @@ class SettingsPage extends React.Component {
                                             <TableCell variant="head" component='div'  className={classNames(classes.tableHeader, classes.availableCell)} align="left">Free</TableCell>
                                             <TableCell variant="head" component='div'  className={classNames(classes.tableHeader, classes.actionsCell)} align="left" >Actions</TableCell>
                                             <TableCell variant="head" component='div'  className={classNames(classes.tableHeader, classes.indexCell)} align="left">Index Status</TableCell>
+                                            <TableCell variant="head" component='div'  className={classNames(classes.tableHeader, classes.toolsCell)} align="right"></TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {sources.map(source => {
+                                        {this.props.drives.map(drive => {
                                             let icon_class = "fas fa-hdd"
-                                            if (source.Drive.IsRemovable)
+                                            if (drive.IsRemovable)
                                                 icon_class = "fas fa-usb"
                                             // else if (source.source_type == "internal")
                                             //     icon_class = "fab fa-hdd"
-                                            let indexingProgress = source.IndexStatus == "creating" && source.IndexProgress < 100 ? ` - ${source.IndexProgress}%` : ''
-                                            return (
-                                            <TableRow key={source.ID} className={classes.sourceRow}>
-                                                <TableCell scope="row" className={classes.iconCell}>
-                                                    <div style={{float:'left'}}>
-                                                        <span className={`${icon_class}`} style={{ marginRight: '0.5em' }} />
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell scope="row" className={classNames(classes.bodyCell, classes.nameCell)}>
-                                                    {source.Caption}
-                                                </TableCell>
-                                                <TableCell scope="row" className={classNames(classes.bodyCell, classes.capacityCell)}>
-                                                {source.Status == "mounted" && Utils.humanFileSize(source.SizeBytes)}
-                                                </TableCell>
-                                                <TableCell scope="row" className={classNames(classes.bodyCell, classes.availableCell)}>
-                                                {source.Status == "mounted" && Utils.humanFileSize(source.AvailableBytes)}
-                                                </TableCell>
-                                                <TableCell align="left"  className={classNames(classes.bodyCell, classes.actionsCell)}>
-                                                <div style={{width: "150px", float: 'left', minHeight: '1px'}}>
-                                                    { (() => {
-                                                        if (source.Status == "mounted" && source.Type != "internal")
-                                                            return <Tooltip title="Unmounting the drive will make it inaccessible.">
-                                                                        <Button variant="outline" color="primary" size="small" onClick={() => {this.handleUnmountClick(source)} }>
-                                                                            {source.Drive.DriveType != "CloudDrive" && <UnmountIcon className={classes.leftIcon}></UnmountIcon>}
-                                                                            {source.Drive.DriveType == "GoogleDriveAccount" && <DisconnectIcon className={classes.leftIcon}></DisconnectIcon>}
-                                                                            {source.Drive.DriveType != "CloudDrive" ? "Eject" : "Disconnect"}
+                                            return (<><TableRow key={drive.ID} className={classes.driveRow}>
+                                                        <TableCell scope="row" className={classes.iconCell}>
+                                                            <div style={{float:'left'}}>
+                                                                <span className={`${icon_class}`} style={{ marginRight: '0.5em' }} />
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell scope="row" className={classNames(classes.bodyCell, classes.nameCell)}>
+                                                        {drive.DeviceFile} ({drive.SerialNumber})
+                                                        </TableCell>
+                                                        <TableCell scope="row" className={classNames(classes.bodyCell, classes.capacityCell)}>
+                                                        {Utils.humanFileSize(drive.SizeBytes)}
+                                                        </TableCell>
+                                                        <TableCell scope="row" className={classNames(classes.bodyCell, classes.availableCell)}>
+                                                        </TableCell>
+                                                        <TableCell align="left"  className={classNames(classes.bodyCell, classes.actionsCell)}>
+                                                        </TableCell>
+                                                        <TableCell className={classNames(classes.bodyCell,classes.indexCell)}></TableCell>
+
+                                                        <TableCell>
+                                                        <div>
+                                                            {drive.DriveType != "internal" && (<Button variant="outline"
+                                                                color="primary" size="small"
+                                                                onClick={() => this.setState({selectedSource: drive, toolDialogOpen: true, toolDialogState: "drives_tool_menu"}) }>
+                                                                <BuildIcon className={classes.leftIcon}></BuildIcon></Button>)}
+                                                        </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                        {drive.Partitions.map(source => {
+                                                            let indexingProgress = source.IndexStatus == "creating" && source.IndexProgress < 100 ? ` - ${source.IndexProgress}%` : ''
+                                                            return (
+                                                            <TableRow key={source.ID} className={classes.sourceRow}>
+                                                                <TableCell scope="row" className={classes.iconCell}>
+                                                                </TableCell>
+                                                                <TableCell scope="row" className={classNames(classes.bodyCell, classes.nameCell)}>
+                                                                    {source.Caption}
+                                                                </TableCell>
+                                                                <TableCell scope="row" className={classNames(classes.bodyCell, classes.capacityCell)}>
+                                                                {source.Status == "mounted" && Utils.humanFileSize(source.SizeBytes)}
+                                                                </TableCell>
+                                                                <TableCell scope="row" className={classNames(classes.bodyCell, classes.availableCell)}>
+                                                                {source.Status == "mounted" && Utils.humanFileSize(source.AvailableBytes)}
+                                                                </TableCell>
+                                                                <TableCell align="left"  className={classNames(classes.bodyCell, classes.actionsCell)}>
+                                                                <div style={{width: "150px", float: 'left', minHeight: '1px'}}>
+                                                                    { (() => {
+                                                                        if (source.Status == "mounted" && source.Type != "internal")
+                                                                            return <Tooltip title="Unmounting the drive will make it inaccessible.">
+                                                                                        <Button variant="outline" color="primary" size="small" onClick={() => {this.handleUnmountClick(source)} }>
+                                                                                            {source.Drive.DriveType != "CloudDrive" && <UnmountIcon className={classes.leftIcon}></UnmountIcon>}
+                                                                                            {source.Drive.DriveType == "GoogleDriveAccount" && <DisconnectIcon className={classes.leftIcon}></DisconnectIcon>}
+                                                                                            {source.Drive.DriveType != "CloudDrive" ? "Eject" : "Disconnect"}
+                                                                                        </Button>
+                                                                                    </Tooltip>
+                                                                        else if (source.Status == "unmounted")
+                                                                            return <Tooltip title="Mounting a drive partition allows you to browse its contents via the browser and the mobile and desktop apps">
+                                                                                        <Button variant="outline" color="primary" size="small" onClick={() => {this.handleMountClick(source)} }>
+                                                                                            {source.Drive.DriveType != "CloudDrive" && <MountIcon className={classes.leftIcon}></MountIcon>}
+                                                                                            {source.Drive.DriveType == "GoogleDriveAccount" && <ReconnectIcon className={classes.leftIcon}></ReconnectIcon>}
+                                                                                            {source.Drive.DriveType != "CloudDrive" ? "Mount" : "Reconnect"}
+
+                                                                                        </Button>
+                                                                                    </Tooltip>
+                                                                        else if (source.Status == "unmountable")
+                                                                            return <Tooltip title={source.Filesystem != "" ? `This partition's filesystem ${source.Filesystem} is not supported` :
+                                                                                                        "Partition is not formatted or could not determine filesystem" }><span>
+                                                                                        <Button variant="outline" disabled="true" color="primary" size="small" onClick={() => {this.handleMountClick(source)} }>
+                                                                                            {source.Drive.DriveType != "CloudDrive" && <MountIcon className={classes.leftIcon}></MountIcon>}
+                                                                                            {source.Drive.DriveType == "GoogleDriveAccount" && <ReconnectIcon className={classes.leftIcon}></ReconnectIcon>}
+                                                                                            {source.Drive.DriveType != "CloudDrive" ? "Mount" : "Reconnect"}
+                                                                                        </Button></span>
+                                                                                    </Tooltip>
+                                                                        else if (source.Type != "internal")
+                                                                            return <CircularProgress className={classes.progress} size={20} />
+                                                                        })()
+                                                                    }
+                                                                    </div>
+                                                                    <div style={{width: "180px", float: 'left', minHeight: '1px'}}>
+                                                                    {source.IndexStatus == "" && source.Status == "mounted" && (
+                                                                        <Tooltip title="Indexing a drive partitions allows your to search your files and their contents in blazing speed">
+                                                                            <Button variant="outline"
+                                                                                    color="primary" size="small"
+                                                                                    onClick={() => { this.openIndexDialog(source) }}>
+                                                                                <IndexIcon className={classes.leftIcon}></IndexIcon>
+                                                                                Create Index
+                                                                            </Button>
+                                                                        </Tooltip>)
+                                                                    }
+                                                                    {source.index && source.IndexStatus === "deleting"  && (
+                                                                        <CircularProgress className={classes.progress} size={20} />
+                                                                    )}
+
+                                                                    {source.IndexStatus === "creating" && (
+                                                                    <Button variant="outline"
+                                                                        color="primary" size="small"
+                                                                        onClick={() => { this.handlePauseClick(source)}}>
+                                                                        <PauseIcon className={classes.leftIcon}></PauseIcon>Pause
+                                                                    </Button>)}
+
+                                                                    {source.IndexStatus === "paused" && (
+                                                                    <Button variant="outline"
+                                                                        color="primary" size="small"
+                                                                        onClick={() => { this.handleResumeClick(source)}}>
+                                                                        <ResumeIcon className={classes.leftIcon}></ResumeIcon>Resume
+                                                                    </Button>)}
+
+                                                                    {(source.IndexStatus === "resuming" || source.IndexStatus === "pausing")  && (
+                                                                        <CircularProgress className={classes.progress} size={20} />
+                                                                    )}
+                                                                    </div>
+                                                                    <div style={{width: "180px", float: 'left', clear: 'right', minHeight: '1px'}}>
+                                                                    {(source.IndexStatus === "paused" || source.IndexStatus === "created") && (
+                                                                        <Button variant="outline"
+                                                                            color="primary" size="small"
+                                                                            onClick={() => { this.handleDeleteIndexClick(source)}}>
+                                                                            <DeleteIcon className={classes.leftIcon}></DeleteIcon>Delete Index
                                                                         </Button>
-                                                                    </Tooltip>
-                                                        else if (source.Status == "unmounted")
-                                                            return <Tooltip title="Mounting a drive partition allows you to browse its contents via the browser and the mobile and desktop apps">
-                                                                        <Button variant="outline" color="primary" size="small" onClick={() => {this.handleMountClick(source)} }>
-                                                                            {source.Drive.DriveType != "CloudDrive" && <MountIcon className={classes.leftIcon}></MountIcon>}
-                                                                            {source.Drive.DriveType == "GoogleDriveAccount" && <ReconnectIcon className={classes.leftIcon}></ReconnectIcon>}
-                                                                            {source.Drive.DriveType != "CloudDrive" ? "Mount" : "Reconnect"}
+                                                                    )}
+                                                                    {source.IndexStatus == "creating" && (
+                                                                        <Tooltip title="Cancelling indexing will stop indexing and delete any index data (this will NOT delete your files)">
+                                                                            <Button variant="outline"
+                                                                                    color="primary" size="small"
+                                                                                    onClick={() => { this.handleCancelClick(source) }}>
+                                                                                <CancelIcon className={classes.leftIcon}></CancelIcon>
+                                                                                Cancel
+                                                                            </Button>
+                                                                        </Tooltip>)
+                                                                    }
+                                                                    {source.IndexStatus === "deleting"  && (
+                                                                        <CircularProgress className={classes.progress} size={20} />
+                                                                    )}
+                                                                    </div>
+                                                                </TableCell>
+                                                                {source.IndexStatus != "" && <><TableCell align="left" className={classNames(classes.bodyCell,classes.indexCell)}>
+                                                                    <div className="indexingDone" style={{display: source.IndexStatus == "created" ? "block" : "none" }}>
+                                                                        <i style={{fontSize: 16, color: 'green'}} class="fas fa-check-circle"></i>
+                                                                    </div>
+                                                                    <div className="indexingDone" style={{display: ["paused", "pausing", "resuming"].includes(source.IndexStatus) ? "block" : "none" }}>
+                                                                        <i style={{fontSize: 17, color: '#F86395'}} class="fas fa-pause-circle"></i>
+                                                                    </div>
+                                                                    <div className="indexingDone" style={{display: ["deleting"].includes(source.IndexStatus) ? "block" : "none" }}>
+                                                                        <i style={{fontSize: 16, color: 'orange'}} class="fas fa-clock"></i>
+                                                                    </div>
 
-                                                                        </Button>
-                                                                    </Tooltip>
-                                                        else if (source.Status == "unmountable")
-                                                            return <Tooltip title={source.Filesystem != "" ? `This partition's filesystem ${source.Filesystem} is not supported` :
-																						"Partition is not formatted or could not determine filesystem" }><span>
-                                                                        <Button variant="outline" disabled="true" color="primary" size="small" onClick={() => {this.handleMountClick(source)} }>
-                                                                            {source.Drive.DriveType != "CloudDrive" && <MountIcon className={classes.leftIcon}></MountIcon>}
-                                                                            {source.Drive.DriveType == "GoogleDriveAccount" && <ReconnectIcon className={classes.leftIcon}></ReconnectIcon>}
-                                                                            {source.Drive.DriveType != "CloudDrive" ? "Mount" : "Reconnect"}
-                                                                        </Button></span>
-                                                                    </Tooltip>
-                                                        else if (source.Type != "internal")
-                                                            return <CircularProgress className={classes.progress} size={20} />
-                                                        })()
-                                                    }
-                                                    </div>
-                                                    <div style={{width: "180px", float: 'left', minHeight: '1px'}}>
-                                                    {source.IndexStatus == "" && source.Status == "mounted" && (
-                                                        <Tooltip title="Indexing a drive partitions allows your to search your files and their contents in blazing speed">
-                                                            <Button variant="outline"
-                                                                    color="primary" size="small"
-                                                                    onClick={() => { this.openIndexDialog(source) }}>
-                                                                <IndexIcon className={classes.leftIcon}></IndexIcon>
-                                                                Create Index
-                                                            </Button>
-                                                        </Tooltip>)
-                                                    }
-                                                    {source.index && source.IndexStatus === "deleting"  && (
-                                                        <CircularProgress className={classes.progress} size={20} />
-                                                    )}
+                                                                    { (source.IndexStatus == "init" || source.IndexStatus == "creating") && source.IndexProgress < 100 && (<div className="meter orange">
+                                                                                                                <span style={{width: `${source.IndexProgress}%` }} />
+                                                                                                            </div>)}
+                                                                    {source.IndexStatus == "scheduled" && "Scheduled" }
+                                                                    {source.IndexStatus == "init" && "Initializing index (scanning files)" }
+                                                                    {![ "scheduled", "cancelling", "deleting"].includes(source.IndexStatus) && `${source.IndexIndexedDocuments} document(s) ${indexingProgress}`}
 
-                                                    {source.IndexStatus === "creating" && (
-                                                    <Button variant="outline"
-                                                        color="primary" size="small"
-                                                        onClick={() => { this.handlePauseClick(source)}}>
-                                                        <PauseIcon className={classes.leftIcon}></PauseIcon>Pause
-                                                    </Button>)}
+                                                                </TableCell>
+                                                                </>}
+                                                                {source.IndexStatus == "" && <TableCell className={classNames(classes.bodyCell,classes.indexCell)}>Not indexed</TableCell>}
+                                                                <TableCell>
 
-                                                    {source.IndexStatus === "paused" && (
-                                                    <Button variant="outline"
-                                                        color="primary" size="small"
-                                                        onClick={() => { this.handleResumeClick(source)}}>
-                                                        <ResumeIcon className={classes.leftIcon}></ResumeIcon>Resume
-                                                    </Button>)}
+                                                                <div>
+                                                                <Button variant="outline"
+                                                                        color="primary" size="small"
+                                                                        onClick={() => this.setState({selectedSource: source, toolDialogOpen: true, toolDialogState: "partitions_tool_menu"}) }>
+                                                                        <BuildIcon className={classes.leftIcon}></BuildIcon>
+                                                                    </Button>
+                                                                    </div>
 
-                                                    {(source.IndexStatus === "resuming" || source.IndexStatus === "pausing")  && (
-                                                        <CircularProgress className={classes.progress} size={20} />
-                                                    )}
-                                                    </div>
-                                                    <div style={{width: "180px", float: 'left', clear: 'right', minHeight: '1px'}}>
-                                                    {(source.IndexStatus === "paused" || source.IndexStatus === "created") && (
-                                                        <Button variant="outline"
-                                                            color="primary" size="small"
-                                                            onClick={() => { this.handleDeleteIndexClick(source)}}>
-                                                            <DeleteIcon className={classes.leftIcon}></DeleteIcon>Delete Index
-                                                        </Button>
-                                                    )}
-                                                    {source.IndexStatus == "creating" && (
-                                                        <Tooltip title="Cancelling indexing will stop indexing and delete any index data (this will NOT delete your files)">
-                                                            <Button variant="outline"
-                                                                    color="primary" size="small"
-                                                                    onClick={() => { this.handleCancelClick(source) }}>
-                                                                <CancelIcon className={classes.leftIcon}></CancelIcon>
-                                                                Cancel
-                                                            </Button>
-                                                        </Tooltip>)
-                                                    }
-                                                    {source.IndexStatus === "deleting"  && (
-                                                        <CircularProgress className={classes.progress} size={20} />
-                                                    )}
 
-                                                    </div>
-
-                                                </TableCell>
-                                                {source.IndexStatus != "" && <><TableCell align="left" className={classNames(classes.bodyCell,classes.indexCell)}>
-                                                    <div className="indexingDone" style={{display: source.IndexStatus == "created" ? "block" : "none" }}>
-                                                        <i style={{fontSize: 16, color: 'green'}} class="fas fa-check-circle"></i>
-                                                    </div>
-                                                    <div className="indexingDone" style={{display: ["paused", "pausing", "resuming"].includes(source.IndexStatus) ? "block" : "none" }}>
-                                                        <i style={{fontSize: 17, color: '#F86395'}} class="fas fa-pause-circle"></i>
-                                                    </div>
-                                                    <div className="indexingDone" style={{display: ["deleting"].includes(source.IndexStatus) ? "block" : "none" }}>
-                                                        <i style={{fontSize: 16, color: 'orange'}} class="fas fa-clock"></i>
-                                                    </div>
-
-                                                    { (source.IndexStatus == "init" || source.IndexStatus == "creating") && source.IndexProgress < 100 && (<div className="meter orange">
-                                                                                                <span style={{width: `${source.IndexProgress}%` }} />
-                                                                                            </div>)}
-                                                    {source.IndexStatus == "scheduled" && "Scheduled" }
-                                                    {source.IndexStatus == "init" && "Initializing index (scanning files)" }
-                                                    {![ "scheduled", "cancelling", "deleting"].includes(source.IndexStatus) && `${source.IndexIndexedDocuments} document(s) ${indexingProgress}`}
-
-                                                </TableCell>
-                                                </>}
-                                                {source.IndexStatus == "" && <TableCell className={classNames(classes.bodyCell,classes.indexCell)}>Not indexed</TableCell>}
-                                            </TableRow>)
-
-                                        })}
+                                                                </TableCell>
+                                                            </TableRow>)
+                                                        })}
+                                                </>) })}
                                     </TableBody>
                                 </Table>
                             </Paper>

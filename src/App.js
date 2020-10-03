@@ -224,6 +224,7 @@ class App extends React.Component {
     searchQuery: '',
     currentPage: 0,
     sources: [],
+    drives: [],
     browserListOpen: true,
     appReady: false,
   };
@@ -259,7 +260,9 @@ class App extends React.Component {
        .get(`${JAWHAR_API}/sources`)
        .then(res => {
            const response = res.data;
-           this.setState({ appReady: true, sources: response, pendingSourcesRequest: false  })
+           var partitions = [].concat.apply([], response.map( d => d.Partitions))
+           console.log("Sources", partitions)
+           this.setState({ appReady: true, sources: partitions, drives: response, pendingSourcesRequest: false  })
        });
     }
 
@@ -609,7 +612,7 @@ class App extends React.Component {
             />
           )}/>
 
-          <Route path="/manage" render={() => (<SettingsPage sources={this.state.sources} />)}/>
+          <Route path="/manage" render={() => (<SettingsPage sources={this.state.sources} drives={this.state.drives} />)}/>
           <Route path="/appStore" render={() => (<AppStorePage sources={this.state.sources} />)}/>
           <Route path="/apps/:auid+" render={({match}) => (<AppLoader auid={match.params.auid} />)}/>
 

@@ -637,7 +637,7 @@ class SettingsPage extends React.Component {
                                                             </div>
                                                         </TableCell>
                                                         <TableCell scope="row" className={classNames(classes.bodyCell, classes.nameCell)}>
-                                                        {drive.DeviceFile} ({drive.SerialNumber})
+                                                        {drive.Vendor}
                                                         </TableCell>
                                                         <TableCell scope="row" className={classNames(classes.bodyCell, classes.capacityCell)}>
                                                         {Utils.humanFileSize(drive.SizeBytes)}

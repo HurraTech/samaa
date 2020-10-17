@@ -9,13 +9,17 @@ import BrowserTable from './BroswerTable';
 import ProgressIndicator from '../components/ProgressIndicator';
 import { withRouter } from 'react-router-dom'
 import { JAWHAR_API  } from '../constants';
+import Dropzone from 'react-dropzone'
+import Backdrop from '@material-ui/core/Backdrop';
+import Typography from '@material-ui/core/Typography';
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} from '@material-ui/core'
 
 const styles = theme => ({
   paper: {
     maxWidth: '100%',
     margin: 'auto',
     overflow: 'hidden',
-    height: "85vh",
+    height: "82vh",
   },
   searchBar: {
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
@@ -57,6 +61,8 @@ class BrowserPage extends React.Component {
       isAjaxInProgress: false,
       path: props.path,
       requestedItem: null,
+      deleteConfirmDialog: false,
+      selectedItem: {},
       items: [],
 
       searchTerms: [],
@@ -126,9 +132,72 @@ class BrowserPage extends React.Component {
     this.props.history.push({ pathname: path});
   };
 
+  handleDeleteClick = index => {
+    console.log("Dialog to delete ", this.state.items[index])
+    this.setState({
+      selectedItem: this.state.items[index],
+      deleteConfirmDialog: true
+    }, () => {
+      console.log("SELECTED ITEM SET TO ", this.state.selectedItem)
+    })
+  }
+
+  cancelDelete() {
+    this.setState({
+      deleteConfirmDialog: false,
+      selectedItem: {},
+    })
+  }
+
+  confirmDelete() {
+    console.log("Deleting", this.state.selectedItem.Path)
+    axios.delete(`${JAWHAR_API}/${this.state.selectedItem.Path}`).then(res => {
+      this.setState({
+        selectedItem: {},
+        deleteConfirmDialog: false,
+      })
+      this.browse()
+    })
+
+
+  }
 
   componentDidMount() {
     this.browse();
+  }
+
+  uploadFiles(files) {
+   for (var file of files) {
+     console.log(`Uploading  :  ${file.path}`)
+
+     const reader = new FileReader()
+
+     reader.onabort = () => console.log('file reading was aborted')
+     reader.onerror = () => console.log('file reading has failed')
+     reader.onload = () => {
+       var formData = new FormData();
+       formData.append("file", reader.result);
+
+       axios.post(`${JAWHAR_API}/${this.props.path}${file.path}`, formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+      }
+    //  reader.readAsDataURL(file)
+      var formData = new FormData();
+      formData.append("file", file);
+
+      axios.post(`${JAWHAR_API}/${this.props.path}${file.path}`, formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(res => {
+        this.browse()
+      })
+    }
   }
 
   browse() {
@@ -180,48 +249,97 @@ class BrowserPage extends React.Component {
     return (<span>
         {this.state.error != "" &&
           <Alert severity="error" className={classes.error}> <div dangerouslySetInnerHTML={{__html: this.state.error}} /></Alert>}
+
+      <Dialog
+        open={this.state.deleteConfirmDialog}
+        onClose={this.cancelDelete.bind(this)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        {this.state.deleteConfirmDialog && (<>
+        <DialogTitle id="alert-dialog-title">{"Delete File(s)?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete <b>{this.state.selectedItem.Path.replace(/^.*[\\\/]/, '')}</b>? This cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.cancelDelete.bind(this)} color="primary" autoFocus>
+            Cancel
+          </Button>
+          <Button onClick={this.confirmDelete.bind(this)} color="primary">
+            Yes
+          </Button>
+        </DialogActions></>)
+        }
+      </Dialog>
+
+
       <Paper className={classes.paper}>
         <div className={classes.contentWrapper}>
-          <BrowserTable
-            rowCount={this.state.items.length}
-            rowGetter={({ index }) => ({ file: items[index] })}
-            onPreviewClick={this.handlePreviewClick}
-            onFilenameClick={this.handleFilenameClick}
-            classes={classes.table}
-            searchTerms={this.state.searchTerms}
-            columns={[
-              {
-                width: 200,
-                flexGrow: 1.0,
-                label: 'File',
-                dataKey: 'file',
-                content: 'filename',
-              },
-              {
-                width: 100,
-                label: 'Size',
-                dataKey: 'file',
-                content: 'size',
-                numeric: true,
-              },
-              {
-                width: 150,
-                label: 'Created',
-                dataKey: 'file',
-                content: 'created',
-                numeric: true,
-              },
-              {
-                width: 40,
-                label: '',
-                dataKey: 'file',
-                content: 'downloadButton',
-              },
-            ]}
-          />
+        <Dropzone onDrop={acceptedFiles => this.uploadFiles(acceptedFiles)}>
+          {({getRootProps, getInputProps, isDragActive}) => (
+              <div {...getRootProps()} style={{height: "100%"}}>
+                {/* <input {...getInputProps()} /> */}
+                <Backdrop open={isDragActive} style={{zIndex: 1000}}>
+                  <Typography variant="h4" component="h2" style={{color:"white"}}>
+                    Drop Here to Upload Files
+                  </Typography>
+                  </Backdrop>
+                <BrowserTable
+                        rowCount={this.state.items.length}
+                        rowGetter={({ index }) => ({ file: items[index] })}
+                        onPreviewClick={this.handlePreviewClick}
+                        onFilenameClick={this.handleFilenameClick}
+                        classes={classes.table}
+                        searchTerms={this.state.searchTerms}
+                        onDeleteClick={this.handleDeleteClick}
+                        columns={[
+                          {
+                            width: 200,
+                            flexGrow: 1.0,
+                            label: 'File',
+                            dataKey: 'file',
+                            content: 'filename',
+                          },
+                          {
+                            width: 100,
+                            label: 'Size',
+                            dataKey: 'file',
+                            content: 'size',
+                            numeric: true,
+                          },
+                          {
+                            width: 150,
+                            label: 'Created',
+                            dataKey: 'file',
+                            content: 'created',
+                            numeric: true,
+                          },
+                          {
+                            width: 40,
+                            label: '',
+                            dataKey: 'file',
+                            content: 'downloadButton',
+                          },
+                          {
+                            width: 40,
+                            label: '',
+                            dataKey: 'file',
+                            content: 'deleteButton',
+                          },
+
+                        ]}
+                      />
+              </div>
+          )}
+        </Dropzone>
         </div>
       </Paper>
-      <div class={classes.progressWrapper}>{this.state.isAjaxInProgress && <ProgressIndicator />}</div></span>
+      <div class={classes.progressWrapper}>{this.state.isAjaxInProgress && <ProgressIndicator />}</div>
+      <br/>
+      <Alert severity="info">Drag and Drop Files Above to Upload Files</Alert>
+      </span>
     );
   }
 }

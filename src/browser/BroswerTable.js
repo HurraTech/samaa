@@ -17,6 +17,7 @@ import Moment from 'react-moment';
 import Utils from '../utils';
 import OpenIcon from '@material-ui/icons/OpenInNew';
 import DownloadIcon from '@material-ui/icons/GetApp';
+import DeleteIcon from '@material-ui/icons/Delete';
 import FilterIcon from '@material-ui/icons/FilterList';
 import { JAWHAR_API  } from '../constants';
 
@@ -67,6 +68,9 @@ const styles = theme => ({
       backgroundColor: 'transparent',
     },
   },
+  dragActive: {
+    backgroundColor: 'black',
+  }
 });
 
 class BrowserTable extends React.PureComponent {
@@ -101,6 +105,11 @@ class BrowserTable extends React.PureComponent {
 
   getRowClassName = ({ index }) => {
     const { classes, rowClassName, onRowClick } = this.props;
+    if (this.props.isDragActive) {
+      return classNames(classes.dragActive, classes.tableRow, classes.flexContainer, rowClassName, {
+        [classes.tableRowHover]: index !== -1,
+      });
+    }
 
     return classNames(classes.tableRow, classes.flexContainer, rowClassName, {
       [classes.tableRowHover]: index !== -1,
@@ -113,7 +122,7 @@ class BrowserTable extends React.PureComponent {
     rowIndex,
     row,
   }) => {
-    const { columns, classes, rowHeight, onRowClick, theme } = this.props;
+    const { columns, classes, rowHeight, onRowClick, onDeleteClick, theme } = this.props;
     const { primary, secondary } = theme.palette.text;
     if (!cellData) {
       return (
@@ -171,7 +180,7 @@ class BrowserTable extends React.PureComponent {
         );
       }
       case 'downloadButton': {
-        if (cellData.isDir)
+        if (cellData.IsDir)
           return (
             <TableCell
               style={{ height: rowHeight }}
@@ -198,6 +207,36 @@ class BrowserTable extends React.PureComponent {
             </Tooltip>
           </TableCell>
         );
+        }
+        case 'deleteButton': {
+          if (cellData.Name == '..')
+          return (
+            <TableCell
+              style={{ height: rowHeight }}
+              variant="body"
+              className={classNames(classes.tableCell, classes.flexContainer, {
+                [classes.noClick]: onRowClick == null,
+              })}
+            />
+          );
+
+          return (
+            <TableCell
+              component="div"
+              className={classNames(classes.tableCell, classes.flexContainer, {
+                [classes.noClick]: onRowClick == null,
+              })}
+              variant="body"
+              style={{ height: rowHeight }}
+              padding="none"
+            >
+              <Tooltip title="Delete">
+                <IconButton onClick={() => this.props.onDeleteClick(rowIndex) }>
+                  <DeleteIcon color="inherit" color="primary" />
+                </IconButton>
+              </Tooltip>
+            </TableCell>
+          );
       }
       case 'openButton': {
         return (
@@ -457,9 +496,11 @@ BrowserTable.propTypes = {
       width: PropTypes.number.isRequired,
     }),
   ).isRequired,
+  isDragActive: PropTypes.bool,
   searchTerms: PropTypes.array.isRequired,
   headerHeight: PropTypes.number,
   onRowClick: PropTypes.func,
+  onDeleteClick: PropTypes.func,
   rowClassName: PropTypes.string,
   rowHeight: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
   sort: PropTypes.func,

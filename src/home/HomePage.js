@@ -331,6 +331,10 @@ class HomePage extends React.Component {
 				         	</Grid>
 				         	<Grid item xs={12} >
                             <List>
+                            <ListItem>
+                                    <Typography className={classes.heading}>Uptime</Typography>
+                                    <Typography className={classes.secondaryHeading}>{Utils.humanTimeDuration(this.state.stats["uptime"] || 0)}</Typography>
+                                </ListItem>
                                 <ListItem>
                                     <Typography className={classes.heading}>CPU Load</Typography>
                                     <Typography className={classes.secondaryHeading}>%{Math.round(this.state.stats["load_average"] || 0)}</Typography>

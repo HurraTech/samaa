@@ -56,5 +56,27 @@ export default class Utils {
       }
 
     }
+
+    static humanTimeDuration(seconds)
+    {
+      var numyears = Math.floor(seconds / 31536000);
+      var numdays = Math.floor((seconds % 31536000) / 86400); 
+      var numhours = Math.floor(((seconds % 31536000) % 86400) / 3600);
+      var numminutes = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
+      var numseconds = (((seconds % 31536000) % 86400) % 3600) % 60;
+      var out = numseconds + " seconds"
+      if (numminutes > 0)
+        out = numminutes + " minutes"
+      if (numhours > 0)
+        out = numhours + " hours " + numminutes + " minutes"
+      if (numdays > 0)
+        out = numdays + " days " + numhours + " hours"
+      if (numyears > 0)
+        out = numyears + " years " + numdays + " days"
+
+
+      return out;    
+    }
+    
   }
 

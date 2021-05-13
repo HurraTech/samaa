@@ -255,7 +255,7 @@ class HomePage extends React.Component {
            // figure out default selected source id
            let selectedChartSource = this.state.selectedChartSource
            if (this.state.selectedChartSource == null) {
-               selectedChartSource = this.props.sources[0].id
+               selectedChartSource = this.props.sources[0].ID
 		   }
             this.setState({
                 sources: this.props.sources,
@@ -291,7 +291,7 @@ class HomePage extends React.Component {
 
     componentDidMount = () => {
          if (this.state.selectedChartSource == null && this.props.sources.length > 0) {
-             this.setState({selectedChartSource: this.props.sources[0].id})
+             this.setState({selectedChartSource: this.props.sources[0].ID})
 		 }
     }
 

@@ -324,7 +324,7 @@ class HomePage extends React.Component {
                 <Grid item xs={12}>
                     <Typography variant="h6" className={classes.dashboardHeading}>Dashboard</Typography>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={4}>
                     <Card className={classes.chartCard}>
                       <CardContent>
                         <Grid container spacing={2}>
@@ -388,13 +388,13 @@ class HomePage extends React.Component {
 				    </CardContent>
                   </Card>
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={4}>
                     <Card className={classes.chartCard}>
                       <CardContent>
                         <Grid container spacing={2}>
 				         	<Grid item xs={12}>
                                <Typography variant="h4" className={classes.dashboardHeading}>Index Storage Usage</Typography><br/>
-				               <HorizontalBar data={this.state.indexChartData} width="180" height="180"   options={{ maintainAspectRatio: false }} />
+				               <HorizontalBar data={this.state.indexChartData} width="120" height="180"   options={{ maintainAspectRatio: false }} />
 				         	</Grid>
 				     	</Grid>
 				        <Grid item xs={12} className={classes.selectDeviceGridItem}>

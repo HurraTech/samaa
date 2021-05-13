@@ -214,13 +214,14 @@ class HomePage extends React.Component {
           	]
           }]
          }
+         console.log("Sources", sources)
         let source = sources[0]
         if (select != null) {
-            source = sources.filter(s => s.id == select)
+            source = sources.filter(s => s.ID == select)
             if (source.length > 0) source = source[0]
         }
         if (source !== null && source != undefined) {
-	       dataset.datasets[0].data = [Utils.humanFileSizeGBRaw(source.used), Utils.humanFileSizeGBRaw(source.free)]
+	       dataset.datasets[0].data = [Utils.humanFileSizeGBRaw(source.SizeBytes-source.AvailableBytes), Utils.humanFileSizeGBRaw(source.AvailableBytes)]
            if (source.Type == "internal")
            {
               var indexedSources = sources.filter(s => s.IndexStatus !== "");

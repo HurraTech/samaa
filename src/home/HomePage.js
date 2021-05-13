@@ -157,15 +157,12 @@ class HomePage extends React.Component {
             indexChartData: this.buildIndexChartDataset(this.props.sources),
             selectedChartSource: null,
 			stats : {
-				cpu_load: 1.06,
-				total_memory: 15.39,
-				free_memory: 1.602,
-				disk_stats: {
-					reads_per_second: 0,
-					writes_per_second: 0,
-					total_bytes_read: 0,
-					total_bytes_written: 0
-				}
+				cpu_load: 0,
+				memory_total: 0,
+				memory_free: 0,
+                memory_cached: 0,
+                disk_reads: 0,
+                disk_writes: 0,
 			}
         }
     }
@@ -335,32 +332,28 @@ class HomePage extends React.Component {
 				         	<Grid item xs={12} >
                             <List>
                                 <ListItem>
-                                    <Typography className={classes.heading}>CPU Load Average</Typography>
-                                    <Typography className={classes.secondaryHeading}>{this.state.stats["cpu_load"]}</Typography>
+                                    <Typography className={classes.heading}>CPU Load</Typography>
+                                    <Typography className={classes.secondaryHeading}>%{Math.round(this.state.stats["load_average"] || 0)}</Typography>
                                 </ListItem>
                                 <ListItem>
                                     <Typography className={classes.heading}>Total Memory</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(1024 * 1024 * 1024 * this.state.stats["total_memory"])}</Typography>
+                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["memory_total"] || 0)}</Typography>
+                                </ListItem>
+                                <ListItem>
+                                    <Typography className={classes.heading}>Cached Memory</Typography>
+                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["memory_cached"] || 0)}</Typography>
                                 </ListItem>
                                 <ListItem>
                                     <Typography className={classes.heading}>Free Memory</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(1024 * 1024 * 1024 * this.state.stats["free_memory"])}</Typography>
+                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["memory_free"] || 0)}</Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <Typography className={classes.heading}>Storage Reads/Second</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(1024 * this.state.stats["disk_stats"]["reads_per_second"])}/second</Typography>
+                                    <Typography className={classes.heading}>Disk Reads/Second</Typography>
+                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["disk_reads"] || 0)}/s</Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <Typography className={classes.heading}>Storage Writes/Second</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(1024 * this.state.stats["disk_stats"]["writes_per_second"])}/second</Typography>
-                                </ListItem>
-                                <ListItem>
-                                    <Typography className={classes.heading}>Storage Total Reads</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(1024 * this.state.stats["disk_stats"]["total_bytes_read"])}</Typography>
-                                </ListItem>
-                                <ListItem>
-                                    <Typography className={classes.heading}>Storage Total Writes</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(1024 * this.state.stats["disk_stats"]["total_bytes_written"])}</Typography>
+                                    <Typography className={classes.heading}>Disk Writes/Second</Typography>
+                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["disk_writes"] || 0)}/s</Typography>
                                 </ListItem>
                             </List>
 				         	</Grid>

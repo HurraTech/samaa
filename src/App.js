@@ -281,9 +281,10 @@ class App extends React.Component {
    {
       this.setState({pendingStatsRequest: true})
       axios
-       .get(`${JAWHAR_API}/stats`)
+       .get(`${JAWHAR_API}/system/stats`)
        .then(res => {
            const response = res.data;
+           console.log("STATS!!!", response)
            this.setState({ stats: response, pendingStatsRequest: false })
        });
     }

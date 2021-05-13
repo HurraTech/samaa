@@ -327,7 +327,7 @@ class HomePage extends React.Component {
                       <CardContent>
                         <Grid container spacing={2}>
 				         	<Grid item xs={12}>
-                               <Typography variant="h4" className={classes.dashboardHeading}>System Stats</Typography><br/>
+                               <Typography variant="h4" className={classes.dashboardHeading}>System Stats</Typography>
 				         	</Grid>
 				         	<Grid item xs={12} >
                             <List>
@@ -354,6 +354,14 @@ class HomePage extends React.Component {
                                 <ListItem>
                                     <Typography className={classes.heading}>Disk Writes/Second</Typography>
                                     <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["disk_writes"] || 0)}/s</Typography>
+                                </ListItem>
+                                <ListItem>
+                                    <Typography className={classes.heading}>Network Sent</Typography>
+                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["network_sent"] || 0)}</Typography>
+                                </ListItem>
+                                <ListItem>
+                                    <Typography className={classes.heading}>Network Received</Typography>
+                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["network_received"] || 0)}</Typography>
                                 </ListItem>
                             </List>
 				         	</Grid>

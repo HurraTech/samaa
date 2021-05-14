@@ -164,6 +164,24 @@ const styles = theme => ({
     justifyContent: 'flex-end',
   },
 
+
+  hurraLogo: {
+    [theme.breakpoints.up('sm')]: {
+      backgroundPosition: "50%",
+    },
+    [theme.breakpoints.down('xs')]: {
+      backgroundPosition: "65%",
+    },
+
+    backgroundImage: "url(/icons/logo.svg)",
+    display: "inline-block",
+    backgroundSize: "contain",
+    backgroundRepeat: "no-repeat",
+    fontSize: "125px",
+    width: "100%",
+    height: "50px",
+  },
+
   toolbar: {
     backgroundColor: '#792333'
   },
@@ -423,14 +441,16 @@ class App extends React.Component {
     const drawerContent = (          
       <div>
         <div className={classes.drawerHeader}>
-        <div class="hurralogo" />
-        <IconButton onClick={this.handleDrawerClose}>
-          {theme.direction === 'ltr' ? (
-            <ChevronLeftIcon />
-          ) : (
-            <ChevronRightIcon />
-          )}
-        </IconButton>
+        <div class="hurralogo" className={classes.hurraLogo} />
+        <Hidden smUp>
+          <IconButton onClick={this.handleDrawerClose}>
+            {theme.direction === 'ltr' ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
+          </IconButton>
+        </Hidden>
       </div>
 
       <Divider />
@@ -516,14 +536,16 @@ class App extends React.Component {
           })}
         >
           <Toolbar className={classes.toolbar}>
-            <IconButton
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.handleDrawerOpen}
-            >
-              <MenuIcon />
-            </IconButton>
+            <Hidden smUp>
+              <IconButton
+                className={classes.menuButton}
+                color="inherit"
+                aria-label="Open drawer"
+                onClick={this.handleDrawerOpen}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Hidden>
             <Typography
               className={classes.title}
               variant="h6"

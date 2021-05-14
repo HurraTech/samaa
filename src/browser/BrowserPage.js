@@ -48,7 +48,14 @@ const styles = theme => ({
 class BrowserPage extends React.Component {
   constructor(props) {
     super(props);
-    console.log("Initial path is ", props.path)
+    var path = props.path
+    if (window.location.pathname.startsWith("/browse/preview")) {
+      if (path.charAt(path.length - 1) == "/") 
+        path = path.substr(0, path.length - 1);
+      path = path.substring(0, path.lastIndexOf("/"))
+    }
+    console.log("Initial path is ", path)
+
     this.state = {
       error: "",
       isInstantSearchEnabled: false,
@@ -59,7 +66,7 @@ class BrowserPage extends React.Component {
       isInlineViewerOpen: false,
       previewedTitle: '',
       isAjaxInProgress: false,
-      path: props.path,
+      path: path,
       requestedItem: null,
       deleteConfirmDialog: false,
       selectedItem: {},

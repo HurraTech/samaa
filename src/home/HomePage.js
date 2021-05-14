@@ -2,7 +2,6 @@ import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -16,6 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import FaceIcon from '@material-ui/icons/Face';
 import RunningIcon from '@material-ui/icons/CheckCircle';
 import Utils from '../utils';
+import axios from '../axios';
 import {Pie, HorizontalBar} from 'react-chartjs-2';
 import { JAWHAR_API  } from '../constants';
 
@@ -342,7 +342,7 @@ class HomePage extends React.Component {
                                     <Typography className={classes.heading}>CPU Load</Typography>
                                     <Typography className={classes.secondaryHeading}>
                                     {this.state.stats.loading && <CircularProgress color="secondary" size={20} />}
-                                    {!this.state.stats.loading && "%" + Math.round(this.state.stats["load_average"] || 0)}
+                                    {!this.state.stats.loading && Math.round(this.state.stats["load_average"] || 0) + "%"}
                                     </Typography>
                                 </ListItem>
                                 <ListItem>

@@ -151,7 +151,7 @@ class Content extends React.Component {
     if (query) {
       return new Promise((resolve, reject) => {
         axios
-          .post(`${JAWHAR_API}/sources/${this.props.selectSourceType}/${this.props.selectSourceID}/search?q=${query}&from=${from}&to=${to}`)
+          .get(`${JAWHAR_API}/sources/${this.props.selectSourceType}/${this.props.selectSourceID}/search?q=${query}&from=${from}&to=${to}`)
           .then(res => {
             const response = res.data;
             this.setState(

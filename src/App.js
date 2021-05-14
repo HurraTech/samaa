@@ -5,16 +5,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import HomeIcon from '@material-ui/icons/Home'
 import MoreIcon from '@material-ui/icons/MoreVert';
 import classNames from 'classnames';
@@ -667,7 +665,6 @@ class App extends React.Component {
           <Route path="/manage" render={() => (<SettingsPage sources={this.state.sources} drives={this.state.drives} />)}/>
           <Route path="/appStore" render={() => (<AppStorePage sources={this.state.sources} />)}/>
           <Route path="/apps/:auid+" render={({match}) => (<AppLoader auid={match.params.auid} />)}/>
-
         </main>
       </div>
   </MuiThemeProvider>

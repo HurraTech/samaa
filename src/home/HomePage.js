@@ -323,7 +323,7 @@ class HomePage extends React.Component {
                 <Grid item xs={12}>
                     <Typography variant="h6" className={classes.dashboardHeading}>Dashboard</Typography>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item lg={4}>
                     <Card className={classes.chartCard}>
                       <CardContent>
                         <Grid container spacing={2}>
@@ -400,7 +400,7 @@ class HomePage extends React.Component {
 				    </CardContent>
                   </Card>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item lg={4}>
                     <Card className={classes.chartCard}>
                       <CardContent>
                         <Grid container spacing={2}>
@@ -421,7 +421,7 @@ class HomePage extends React.Component {
 				    </CardContent>
                   </Card>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item lg={4}>
                     <Card className={classes.chartCard}>
                       <CardContent>
                         <Grid container spacing={2}>
@@ -436,7 +436,7 @@ class HomePage extends React.Component {
 				    </CardContent>
                   </Card>
                 </Grid>
-                <Grid container item xs={12} spacing={2}>
+                <Grid container item lg={12} spacing={2}>
                     <Grid item xs={12}>
                         <Typography variant="h6" className={classes.dashboardHeading}>Applications</Typography>
                     </Grid>

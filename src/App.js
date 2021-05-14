@@ -76,7 +76,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('lg')]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
     },
@@ -166,10 +166,10 @@ const styles = theme => ({
 
 
   hurraLogo: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('lg')]: {
       backgroundPosition: "50%",
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('md')]: {
       backgroundPosition: "65%",
     },
 
@@ -190,7 +190,7 @@ const styles = theme => ({
     display: 'none',
   },
   drawer: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('lg')]: {
       width: drawerWidth,
       flexShrink: 0,
     },
@@ -442,7 +442,7 @@ class App extends React.Component {
       <div>
         <div className={classes.drawerHeader}>
         <div class="hurralogo" className={classes.hurraLogo} />
-        <Hidden smUp>
+        <Hidden lgUp>
           <IconButton onClick={this.handleDrawerClose}>
             {theme.direction === 'ltr' ? (
               <ChevronLeftIcon />
@@ -536,7 +536,7 @@ class App extends React.Component {
           })}
         >
           <Toolbar className={classes.toolbar}>
-            <Hidden smUp>
+            <Hidden lgUp>
               <IconButton
                 className={classes.menuButton}
                 color="inherit"
@@ -602,7 +602,7 @@ class App extends React.Component {
         </AppBar>
         {renderMenu}
         {renderMobileMenu}
-        <Hidden smUp>
+        <Hidden lgUp>
           <Drawer
             classes={{
               paper: classes.drawerPaper,
@@ -617,7 +617,7 @@ class App extends React.Component {
             {drawerContent}
           </Drawer>
         </Hidden>
-        <Hidden xsDown>
+        <Hidden mdDown>
           <Drawer
             className={classes.drawer}
             variant="permanent"

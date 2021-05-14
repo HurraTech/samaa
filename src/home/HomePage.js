@@ -130,7 +130,7 @@ const styles = theme => ({
     heading: {
         fontSize: theme.typography.pxToRem(15),
         color: theme.palette.text.secondary,
-        width: "200px"
+        width: "150px"
     },
 
     secondaryHeading: {
@@ -323,7 +323,7 @@ class HomePage extends React.Component {
                 <Grid item xs={12}>
                     <Typography variant="h6" className={classes.dashboardHeading}>Dashboard</Typography>
                 </Grid>
-                <Grid item lg={4}>
+                <Grid item xs={12} sm={6} md={4}>
                     <Card className={classes.chartCard}>
                       <CardContent>
                         <Grid container spacing={2}>
@@ -367,14 +367,14 @@ class HomePage extends React.Component {
                                     </Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <Typography className={classes.heading}>Disk Reads/Second</Typography>
+                                    <Typography className={classes.heading}>Disk Reads</Typography>
                                     <Typography className={classes.secondaryHeading}>
                                         {this.state.stats.loading && <CircularProgress color="secondary" size={20} />}
                                         {!this.state.stats.loading && Utils.humanFileSize(this.state.stats["disk_reads"] || 0) + "/s"}
                                     </Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <Typography className={classes.heading}>Disk Writes/Second</Typography>
+                                    <Typography className={classes.heading}>Disk Writes</Typography>
                                     <Typography className={classes.secondaryHeading}>
                                         {this.state.stats.loading && <CircularProgress color="secondary" size={20} />}                                        
                                         {!this.state.stats.loading && Utils.humanFileSize(this.state.stats["disk_writes"] || 0) + "/s"}
@@ -400,7 +400,7 @@ class HomePage extends React.Component {
 				    </CardContent>
                   </Card>
                 </Grid>
-                <Grid item lg={4}>
+                <Grid item xs={12} sm={6} md={4}>
                     <Card className={classes.chartCard}>
                       <CardContent>
                         <Grid container spacing={2}>
@@ -421,7 +421,7 @@ class HomePage extends React.Component {
 				    </CardContent>
                   </Card>
                 </Grid>
-                <Grid item lg={4}>
+                <Grid item xs={12} sm={12} md={4}>
                     <Card className={classes.chartCard}>
                       <CardContent>
                         <Grid container spacing={2}>
@@ -436,7 +436,7 @@ class HomePage extends React.Component {
 				    </CardContent>
                   </Card>
                 </Grid>
-                <Grid container item lg={12} spacing={2}>
+                <Grid container item xs={12} spacing={2}>
                     <Grid item xs={12}>
                         <Typography variant="h6" className={classes.dashboardHeading}>Applications</Typography>
                     </Grid>

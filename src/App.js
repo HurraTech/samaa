@@ -40,6 +40,7 @@ import AppStorePage from './appStore/AppStorePage'
 import { Route, Link, withRouter, Redirect } from 'react-router-dom';
 import BrowserPage from './browser/BrowserPage'
 import { create } from 'jss';
+import Hidden from '@material-ui/core/Hidden';
 import {
   createGenerateClassName,
   jssPreset,
@@ -75,6 +76,10 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+    },
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -167,8 +172,10 @@ const styles = theme => ({
     display: 'none',
   },
   drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
+    [theme.breakpoints.up('sm')]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
   },
   drawerPaper: {
     width: drawerWidth,
@@ -189,7 +196,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: -drawerWidth,
+    marginLeft: 0,
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -220,7 +227,7 @@ class App extends React.Component {
   state = {
     anchorEl: null,
     mobileMoreAnchorEl: null,
-    open: true,
+    open: false,
     searchQuery: '',
     currentPage: 0,
     sources: [],
@@ -234,6 +241,7 @@ class App extends React.Component {
   };
 
   handleDrawerClose = () => {
+    console.log("Drawer close")
     this.setState({ open: false });
   };
 
@@ -412,6 +420,91 @@ class App extends React.Component {
       </Menu>
     );
 
+    const drawerContent = (          
+      <div>
+        <div className={classes.drawerHeader}>
+        <div class="hurralogo" />
+        <IconButton onClick={this.handleDrawerClose}>
+          {theme.direction === 'ltr' ? (
+            <ChevronLeftIcon />
+          ) : (
+            <ChevronRightIcon />
+          )}
+        </IconButton>
+      </div>
+
+      <Divider />
+      <List>
+        <Link to={`/`} style={{ textDecoration: 'none' }}>
+            <ListItem onClick={this.handleDrawerClose} button key="Home" selected={this.props.history.location.pathname == "/"}>
+              <ListItemIcon><HomeIcon /></ListItemIcon>
+              <ListItemText primary="Home" style={{color:'black'}} />
+            </ListItem>
+        </Link>
+          <Link to={`/appStore/`} style={{ textDecoration: 'none' }}>
+            <ListItem onClick={this.handleDrawerClose} button key="AppStore" selected={this.props.history.location.pathname.startsWith(`/appStore/`)}>
+              <ListItemIcon><AppsIcon /></ListItemIcon>
+              <ListItemText primary="App Store" style={{color:'black'}} />
+            </ListItem>
+          </Link>
+        <Divider />
+        { this.firstSearchLink() ? (<Link to={`${this.firstSearchLink()}`} style={{ textDecoration: 'none' }}>
+            <ListItem onClick={this.handleDrawerClose} button key="Search" selected={this.props.history.location.pathname.startsWith(`/search/`)}>
+              <ListItemIcon><SearchIcon /></ListItemIcon>
+              <ListItemText primary="Search" style={{color:'black'}} />
+            </ListItem>
+          </Link>) : (<Link to={`${this.firstSearchLink()}`}  className="disabledCursor" onClick={ (event) => event.preventDefault()} style={{ textDecoration: 'none' }}>
+            <ListItem  button key="Search" selected={this.props.history.location.pathname.startsWith(`/search/`)}>
+              <ListItemIcon>
+                <SearchIcon />
+              </ListItemIcon>
+              <Tooltip title="You don't have any mounted storage with indices. Please either create indices to search or mount storages that you have already indexed.">
+                <ListItemText primary="Search" style={{color:'black'}} />
+              </Tooltip>
+            </ListItem>
+          </Link>)
+        }
+        <ListItem button key="Browse" selected={this.props.history.location.pathname.startsWith(`/browse/`)} onClick={this.handleBrowserClick}>
+            <ListItemIcon><BrowserIcon /></ListItemIcon>
+            <ListItemText primary="Cloud Drive" style={{color:'black'}} />
+            {this.state.browserListOpen ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={this.state.browserListOpen} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+              {this.state.sources.filter(s => s.Status == "mounted").map(source => {
+                let icon_class = "fas fa-database"
+                if (source.IsRemovable)
+                  icon_class = "fab fa-usb"
+                // else if (source.source_type == "internal")
+                //   icon_class = "fab fa-hdd"
+                // return source.drive_partitions.filter(p => p.status == "mounted").map(partition => {
+                    return <Link
+                    to={`/browse/sources/${source.Type}/${source.ID}/`}
+                    style={{ textDecoration: 'none', color:'black' }}
+                    >
+                        <ListItem onClick={this.handleDrawerClose} button className={classes.nested}>
+                          <div style={{float:'left'}}><span
+                              className={`${icon_class}`}
+                              style={{ marginRight: '0.5em', width:'10px', }}
+                              />
+                            </div>
+                          <ListItemText inset primary={source.Caption} className={classes.sourceNameText} />
+                      </ListItem>
+                      </Link>
+                // })
+              })}
+            </List>
+          </Collapse>
+          <Divider />
+          <Link to={`/manage/`} style={{ textDecoration: 'none' }}>
+            <ListItem onClick={this.handleDrawerClose} button key="Manage" selected={this.props.history.location.pathname.startsWith(`/manage/`)}>
+              <ListItemIcon><SettingsIcon /></ListItemIcon>
+              <ListItemText primary="Manage" style={{color:'black'}} />
+            </ListItem>
+          </Link>
+      </List>
+    </div>);
+
     return (
     <MuiThemeProvider theme={blackTheme}>
       <div className={classes.root}>
@@ -487,98 +580,34 @@ class App extends React.Component {
         </AppBar>
         {renderMenu}
         {renderMobileMenu}
-        <Drawer
-          className={classes.drawer}
-          variant="persistent"
-          anchor="left"
-          open={open}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.drawerHeader}>
-            <div class="hurralogo" />
-            <IconButton onClick={this.handleDrawerClose}>
-              {theme.direction === 'ltr' ? (
-                <ChevronLeftIcon />
-              ) : (
-                <ChevronRightIcon />
-              )}
-            </IconButton>
-          </div>
-
-          <Divider />
-          <List>
-            <Link to={`/`} style={{ textDecoration: 'none' }}>
-                <ListItem button key="Home" selected={this.props.history.location.pathname == "/"}>
-                  <ListItemIcon><HomeIcon /></ListItemIcon>
-                  <ListItemText primary="Home" style={{color:'black'}} />
-                </ListItem>
-            </Link>
-              <Link to={`/appStore/`} style={{ textDecoration: 'none' }}>
-                <ListItem button key="AppStore" selected={this.props.history.location.pathname.startsWith(`/appStore/`)}>
-                  <ListItemIcon><AppsIcon /></ListItemIcon>
-                  <ListItemText primary="App Store" style={{color:'black'}} />
-                </ListItem>
-              </Link>
-            <Divider />
-            { this.firstSearchLink() ? (<Link to={`${this.firstSearchLink()}`} style={{ textDecoration: 'none' }}>
-                <ListItem button key="Search" selected={this.props.history.location.pathname.startsWith(`/search/`)}>
-                  <ListItemIcon><SearchIcon /></ListItemIcon>
-                  <ListItemText primary="Search" style={{color:'black'}} />
-                </ListItem>
-              </Link>) : (<Link to={`${this.firstSearchLink()}`}  className="disabledCursor" onClick={ (event) => event.preventDefault()} style={{ textDecoration: 'none' }}>
-                <ListItem button key="Search" selected={this.props.history.location.pathname.startsWith(`/search/`)}>
-                  <ListItemIcon>
-                    <SearchIcon />
-                  </ListItemIcon>
-                  <Tooltip title="You don't have any mounted storage with indices. Please either create indices to search or mount storages that you have already indexed.">
-                    <ListItemText primary="Search" style={{color:'black'}} />
-                  </Tooltip>
-                </ListItem>
-              </Link>)
-            }
-            <ListItem button key="Browse" selected={this.props.history.location.pathname.startsWith(`/browse/`)} onClick={this.handleBrowserClick}>
-                <ListItemIcon><BrowserIcon /></ListItemIcon>
-                <ListItemText primary="Cloud Drive" style={{color:'black'}} />
-                {this.state.browserListOpen ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse in={this.state.browserListOpen} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                  {this.state.sources.filter(s => s.Status == "mounted").map(source => {
-                    let icon_class = "fas fa-database"
-                    if (source.IsRemovable)
-                      icon_class = "fab fa-usb"
-                    // else if (source.source_type == "internal")
-                    //   icon_class = "fab fa-hdd"
-                    // return source.drive_partitions.filter(p => p.status == "mounted").map(partition => {
-                        return <Link
-                        to={`/browse/sources/${source.Type}/${source.ID}/`}
-                        style={{ textDecoration: 'none', color:'black' }}
-                        >
-                            <ListItem button className={classes.nested}>
-                                <div style={{float:'left'}}><span
-                                      className={`${icon_class}`}
-                                      style={{ marginRight: '0.5em', width:'10px', }}
-                                      />
-                                      </div>
-                            <ListItemText inset primary={source.Caption} className={classes.sourceNameText} />
-                          </ListItem>
-                          </Link>
-                    // })
-                  })}
-                </List>
-              </Collapse>
-              <Divider />
-               <Link to={`/manage/`} style={{ textDecoration: 'none' }}>
-                <ListItem button key="Manage" selected={this.props.history.location.pathname.startsWith(`/manage/`)}>
-                  <ListItemIcon><SettingsIcon /></ListItemIcon>
-                  <ListItemText primary="Manage" style={{color:'black'}} />
-                </ListItem>
-              </Link>
-
-          </List>
-        </Drawer>
+        <Hidden smUp>
+          <Drawer
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            variant="temporary"
+            anchor="left"
+            open={open}
+            classes={{
+              paper: classes.drawerPaper,
+            }}  
+          >
+            {drawerContent}
+          </Drawer>
+        </Hidden>
+        <Hidden xsDown>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            anchor="left"
+            open
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            {drawerContent}
+          </Drawer>
+        </Hidden>
         <main
           className={classNames(classes.content, {
             [classes.contentShift]: open,

@@ -201,7 +201,7 @@ class BrowserTable extends React.PureComponent {
             padding="none"
           >
             <Tooltip title="Donwload File">
-              <IconButton href={`${JAWHAR_API}/files/download/${cellData.Path}` } >
+              <IconButton href={`${JAWHAR_API}${cellData.Path}` } download>
                 <DownloadIcon color="inherit" color="primary" />
               </IconButton>
             </Tooltip>

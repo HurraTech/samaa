@@ -157,6 +157,7 @@ class HomePage extends React.Component {
             indexChartData: this.buildIndexChartDataset(this.props.sources),
             selectedChartSource: null,
 			stats : {
+                loading: true,
 				cpu_load: 0,
 				memory_total: 0,
 				memory_free: 0,
@@ -333,39 +334,65 @@ class HomePage extends React.Component {
                             <List>
                             <ListItem>
                                     <Typography className={classes.heading}>Uptime</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanTimeDuration(this.state.stats["uptime"] || 0)}</Typography>
+                                    <Typography className={classes.secondaryHeading}>
+                                        {this.state.stats.loading && <CircularProgress color="secondary" size={20} />}
+                                        {!this.state.stats.loading && Utils.humanTimeDuration(this.state.stats["uptime"] || 0)}</Typography>
                                 </ListItem>
                                 <ListItem>
                                     <Typography className={classes.heading}>CPU Load</Typography>
-                                    <Typography className={classes.secondaryHeading}>%{Math.round(this.state.stats["load_average"] || 0)}</Typography>
+                                    <Typography className={classes.secondaryHeading}>
+                                    {this.state.stats.loading && <CircularProgress color="secondary" size={20} />}
+                                    {!this.state.stats.loading && "%" + Math.round(this.state.stats["load_average"] || 0)}
+                                    </Typography>
                                 </ListItem>
                                 <ListItem>
                                     <Typography className={classes.heading}>Total Memory</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["memory_total"] || 0)}</Typography>
+                                    <Typography className={classes.secondaryHeading}>
+                                        {this.state.stats.loading && <CircularProgress color="secondary" size={20} />}
+                                        {!this.state.stats.loading && Utils.humanFileSize(this.state.stats["memory_total"] || 0)}
+                                    </Typography>
                                 </ListItem>
                                 <ListItem>
                                     <Typography className={classes.heading}>Cached Memory</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["memory_cached"] || 0)}</Typography>
+                                    <Typography className={classes.secondaryHeading}>
+                                        {this.state.stats.loading && <CircularProgress color="secondary" size={20} />}                                        
+                                        {!this.state.stats.loading && Utils.humanFileSize(this.state.stats["memory_cached"] || 0)}
+                                    </Typography>
                                 </ListItem>
                                 <ListItem>
                                     <Typography className={classes.heading}>Free Memory</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["memory_free"] || 0)}</Typography>
+                                    <Typography className={classes.secondaryHeading}>
+                                        {this.state.stats.loading && <CircularProgress color="secondary" size={20} />}                                        
+                                        {!this.state.stats.loading && Utils.humanFileSize(this.state.stats["memory_free"] || 0)}
+                                    </Typography>
                                 </ListItem>
                                 <ListItem>
                                     <Typography className={classes.heading}>Disk Reads/Second</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["disk_reads"] || 0)}/s</Typography>
+                                    <Typography className={classes.secondaryHeading}>
+                                        {this.state.stats.loading && <CircularProgress color="secondary" size={20} />}
+                                        {!this.state.stats.loading && Utils.humanFileSize(this.state.stats["disk_reads"] || 0) + "/s"}
+                                    </Typography>
                                 </ListItem>
                                 <ListItem>
                                     <Typography className={classes.heading}>Disk Writes/Second</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["disk_writes"] || 0)}/s</Typography>
+                                    <Typography className={classes.secondaryHeading}>
+                                        {this.state.stats.loading && <CircularProgress color="secondary" size={20} />}                                        
+                                        {!this.state.stats.loading && Utils.humanFileSize(this.state.stats["disk_writes"] || 0) + "/s"}
+                                    </Typography>
                                 </ListItem>
                                 <ListItem>
                                     <Typography className={classes.heading}>Network Sent</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["network_sent"] || 0)}</Typography>
+                                    <Typography className={classes.secondaryHeading}>
+                                        {this.state.stats.loading && <CircularProgress color="secondary" size={20} />}                                        
+                                        {!this.state.stats.loading && Utils.humanFileSize(this.state.stats["network_sent"] || 0)}
+                                    </Typography>
                                 </ListItem>
                                 <ListItem>
                                     <Typography className={classes.heading}>Network Received</Typography>
-                                    <Typography className={classes.secondaryHeading}>{Utils.humanFileSize(this.state.stats["network_received"] || 0)}</Typography>
+                                    <Typography className={classes.secondaryHeading}>
+                                        {this.state.stats.loading && <CircularProgress color="secondary" size={20} />}                                        
+                                        {!this.state.stats.loading && Utils.humanFileSize(this.state.stats["network_received"] || 0)}
+                                    </Typography>
                                 </ListItem>
                             </List>
 				         	</Grid>

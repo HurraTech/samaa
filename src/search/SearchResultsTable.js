@@ -170,9 +170,9 @@ class SearchResultsTable extends React.PureComponent {
           >
             <Tooltip title="Donwload File">
               <IconButton
-                href={`${JAWHAR_API}/files/download/${
+                href={`${JAWHAR_API}${
                   cellData.Path
-                }`}
+                }`} download
               >
                 <DownloadIcon color="inherit" color="primary" />
               </IconButton>

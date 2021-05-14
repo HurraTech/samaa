@@ -68,12 +68,11 @@ export default class Utils {
       if (numminutes > 0)
         out = numminutes + " minutes"
       if (numhours > 0)
-        out = numhours + " hours " + numminutes + " minutes"
+        out = numhours + " hours "
       if (numdays > 0)
-        out = numdays + " days " + numhours + " hours"
+        out = numdays + " days "
       if (numyears > 0)
-        out = numyears + " years " + numdays + " days"
-
+        out = numyears + " years "
 
       return out;    
     }

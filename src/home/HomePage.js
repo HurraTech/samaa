@@ -25,7 +25,7 @@ const styles = theme => ({
         flexGrow: 1,
       },
       card: {
-        width: 300,
+        width: "100%",
         height: "100%",
         display: 'flex',
         alignItems: 'center',
@@ -445,7 +445,7 @@ class HomePage extends React.Component {
                             <Typography variant="h6" component="div" className={classes.noAppsMessage}>You do not have any installed applications. Visit the App Store to install applications.</Typography>
                         </Grid> }
                       {this.state.apps.map(app => { return (
-                          <Grid key={app.UniqueID} item>
+                          <Grid key={app.UniqueID} item xs={12} sm={5} md={4}>
                               <Card className={classes.card}>
                                       {app.Status != "installed" &&
                                           <div className ={classes.appLoading} >

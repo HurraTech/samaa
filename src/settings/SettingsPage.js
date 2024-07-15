@@ -627,9 +627,7 @@ class SettingsPage extends React.Component {
                                         {this.props.drives.map(drive => {
                                             let icon_class = "fas fa-hdd"
                                             if (drive.IsRemovable)
-                                                icon_class = "fas fa-usb"
-                                            // else if (source.source_type == "internal")
-                                            //     icon_class = "fab fa-hdd"
+                                                icon_class = "fab fa-usb"
                                             return (<><TableRow key={drive.ID} className={classes.driveRow}>
                                                         <TableCell scope="row" className={classes.iconCell}>
                                                             <div style={{float:'left'}}>
@@ -637,7 +635,7 @@ class SettingsPage extends React.Component {
                                                             </div>
                                                         </TableCell>
                                                         <TableCell scope="row" className={classNames(classes.bodyCell, classes.nameCell)}>
-                                                        {drive.Vendor}
+                                                        {drive.Name} ({drive.Vendor}) - {drive.IsRemovable?"yes":"no"}
                                                         </TableCell>
                                                         <TableCell scope="row" className={classNames(classes.bodyCell, classes.capacityCell)}>
                                                         {Utils.humanFileSize(drive.SizeBytes)}
@@ -657,7 +655,7 @@ class SettingsPage extends React.Component {
                                                         </div>
                                                         </TableCell>
                                                     </TableRow>
-                                                        {drive.Partitions.map(source => {
+                                                        {drive.DriveType != "internal" && drive.Partitions.map(source => {
                                                             let indexingProgress = source.IndexStatus == "creating" && source.IndexProgress < 100 ? ` - ${source.IndexProgress}%` : ''
                                                             return (
                                                             <TableRow key={source.ID} className={classes.sourceRow}>

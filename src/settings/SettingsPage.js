@@ -386,12 +386,11 @@ class SettingsPage extends React.Component {
         console.log(response);
     }
 
-    openGoogleAuthConsent = (source={}) => {
+    openGoogleAuthConsent = () => {
         this.createGoogleAuthWindow()
         this.setState({
             googleAuthConsentOpen: true,
             googleAuthCode: "",
-            selectedSource: source,
             consentFlowState: "enterGoogleAuthCode",
             addDialogOpen: true
         })
@@ -544,13 +543,13 @@ class SettingsPage extends React.Component {
                             Label:  {this.state.selectedSource.Caption}<br/>
                         </DialogContentText>
                         <List>
-                            {this.state.selectedSource.Type != "internal" && <ListItem button onClick={() => this.setState({toolDialogState: "format"}) }>
+                            {this.state.selectedSource.Type != "internal" && <ListItem button onClick={() => this.setState({toolDialogState: "format_disk"}) }>
                                 <ListItemAvatar>
                                     <Avatar><span class="fas fa-eraser" /></Avatar>
                                 </ListItemAvatar>
                                 <ListItemText primary="Format" secondary="Erase and re-format the partition" />
                             </ListItem>}
-                            <ListItem button onClick={this.openGoogleAuthConsent}>
+                            <ListItem button onClick={() => console.log("selected source", this.state.selectedSource)}>
                                 <ListItemAvatar>
                                     <Avatar><FileCopy /></Avatar>
                                 </ListItemAvatar>

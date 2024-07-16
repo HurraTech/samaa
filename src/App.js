@@ -1,56 +1,57 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import { fade } from '@material-ui/core/styles/colorManipulator';
-import { withStyles } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import HomeIcon from '@material-ui/icons/Home'
-import MoreIcon from '@material-ui/icons/MoreVert';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import InputBase from '@mui/material/InputBase';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import { alpha } from '@mui/system/colorManipulator';
+import { withStyles } from '@mui/material/styles';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import HomeIcon from '@mui/icons-material/Home'
+import MoreIcon from '@mui/icons-material/MoreVert';
 import classNames from 'classnames';
 import axios from 'axios';
-import Collapse from '@material-ui/core/Collapse';
-import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import BrowserIcon from '@material-ui/icons/Folder';
-import SettingsIcon from '@material-ui/icons/Settings';
-import AppsIcon from '@material-ui/icons/Apps';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import Collapse from '@mui/material/Collapse';
+import Drawer from '@mui/material/Drawer';
+import CssBaseline from '@mui/material/CssBaseline';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import BrowserIcon from '@mui/icons-material/Folder';
+import SettingsIcon from '@mui/icons-material/Settings';
+import AppsIcon from '@mui/icons-material/Apps';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import SearchPage from './search/SearchPage';
 import SettingsPage from './settings/SettingsPage'
 import AppStorePage from './appStore/AppStorePage'
-import { Route, Link, withRouter, Redirect } from 'react-router-dom';
+import { Route, Link, Redirect } from 'react-router-dom';
 import BrowserPage from './browser/BrowserPage'
 import { create } from 'jss';
-import Hidden from '@material-ui/core/Hidden';
+import Hidden from '@mui/material/Hidden';
 import {
   createGenerateClassName,
-  jssPreset,
-  MuiThemeProvider,
-  createMuiTheme,
-} from '@material-ui/core/styles';
+  jssPreset
+} from '@mui/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import blackThemeFile from './themes/black';
 import HomePage from './home/HomePage';
 import AppLoader from './appLoader/AppLoader';
 import { JAWHAR_API  } from './constants';
 import FilePreview from './components/FilePreview';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
+import withRoute from "./withRoute";
 
 const jss = create({
   ...jssPreset(),
@@ -104,9 +105,9 @@ const styles = theme => ({
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
     '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
     marginRight: theme.spacing.unit * 2,
     marginLeft: 0,
@@ -377,7 +378,7 @@ class App extends React.Component {
     const { classes, theme } = this.props;
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-    const blackTheme = createMuiTheme(blackThemeFile);
+    const blackTheme = createTheme(blackThemeFile);
 
     if (!this.state.appReady) {
       return <div />
@@ -524,7 +525,7 @@ class App extends React.Component {
     </div>);
 
     return (
-    <MuiThemeProvider theme={blackTheme}>
+    <ThemeProvider theme={blackTheme}>
       <div className={classes.root}>
         <CssBaseline />
         <AppBar
@@ -667,7 +668,7 @@ class App extends React.Component {
           <Route path="/apps/:auid+" render={({match}) => (<AppLoader auid={match.params.auid} />)}/>
         </main>
       </div>
-  </MuiThemeProvider>
+  </ThemeProvider>
     );
   }
 }
@@ -679,4 +680,4 @@ App.propTypes = {
   onPartitionClick: PropTypes.func
 };
 
-export default withRouter(withStyles(styles, { withTheme: true })(App));
+export default withRoute(withStyles(styles, { withTheme: true })(App));

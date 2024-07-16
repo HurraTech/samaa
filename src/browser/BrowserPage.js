@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Paper from '@material-ui/core/Paper';
-import { withStyles } from '@material-ui/core/styles';
-import Alert  from '@material-ui/lab/Alert';
+import Paper from '@mui/material/Paper';
+import { withStyles } from '@mui/material/styles';
+import Alert  from '@mui/lab/Alert';
 import axios from 'axios';
 import FilePreview from '../components/FilePreview';
 import BrowserTable from './BroswerTable';
 import ProgressIndicator from '../components/ProgressIndicator';
-import { withRouter } from 'react-router-dom'
 import { JAWHAR_API  } from '../constants';
 import Dropzone from 'react-dropzone'
-import Backdrop from '@material-ui/core/Backdrop';
-import Typography from '@material-ui/core/Typography';
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} from '@material-ui/core'
+import Backdrop from '@mui/material/Backdrop';
+import Typography from '@mui/material/Typography';
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} from '@mui/material'
+import withRoute from "../withRoute";
 
 const styles = theme => ({
   paper: {
@@ -356,4 +356,4 @@ BrowserPage.propTypes = {
 };
 
 
-export default withRouter(withStyles(styles)(BrowserPage));
+export default withRoute(withStyles(styles)(BrowserPage));

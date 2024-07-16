@@ -1,22 +1,22 @@
 import React from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Grid from '@material-ui/core/Grid';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Grid from '@mui/material/Grid';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import { CardActions, SvgIcon, Typography, CardHeader, Button, ButtonBase, Select, MenuItem, List, ListItem } from '@material-ui/core'
+import { withStyles } from '@mui/material/styles';
+import { CardActions, SvgIcon, Typography, CardHeader, Button, ButtonBase, Select, MenuItem, List, ListItem } from '@mui/material'
 import {Link} from 'react-router-dom';
 import classNames from 'classnames';
-import { fade } from '@material-ui/core/styles/colorManipulator';
-import OpenIcon from '@material-ui/icons/OpenInNew'
-import Chip from '@material-ui/core/Chip';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import FaceIcon from '@material-ui/icons/Face';
-import RunningIcon from '@material-ui/icons/CheckCircle';
+import { alpha } from '@mui/system/colorManipulator';
+import OpenIcon from '@mui/icons-material/OpenInNew'
+import Chip from '@mui/material/Chip';
+import CircularProgress from '@mui/material/CircularProgress';
+import FaceIcon from '@mui/icons-material/Face';
+import RunningIcon from '@mui/icons-material/CheckCircle';
 import Utils from '../utils';
 import axios from '../axios';
-import {Pie, HorizontalBar} from 'react-chartjs-2';
+import {Pie, Bar} from 'react-chartjs-2';
 import { JAWHAR_API  } from '../constants';
 
 
@@ -31,9 +31,9 @@ const styles = theme => ({
         alignItems: 'center',
         position: 'relative',
         // cursor: 'pointer',
-        backgroundColor: fade(theme.palette.common.white, 1),
+        backgroundColor: alpha(theme.palette.common.white, 1),
         '&:hover': {
-            backgroundColor: fade(theme.palette.common.white, 0.02),
+            backgroundColor: alpha(theme.palette.common.white, 0.02),
           },
 
       },
@@ -427,7 +427,7 @@ class HomePage extends React.Component {
                         <Grid container spacing={2}>
 				         	<Grid item xs={12}>
                                <Typography variant="h4" className={classes.dashboardHeading}>Index Storage Usage</Typography><br/>
-				               <HorizontalBar data={this.state.indexChartData} width="120" height="180"   options={{ maintainAspectRatio: false }} />
+				               <Bar data={this.state.indexChartData} width="120" height="180"   options={{ maintainAspectRatio: false, indexAxis: 'y' }} />
 				         	</Grid>
 				     	</Grid>
 				        <Grid item xs={12} className={classes.selectDeviceGridItem}>

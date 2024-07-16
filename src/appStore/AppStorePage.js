@@ -1,28 +1,27 @@
 import React from 'react';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 import axios from 'axios';
-import Grid from '@material-ui/core/Grid';
-import { Typography, DialogContent, DialogActions, DialogContentText, InputBase, List, ListItem, Avatar, SvgIcon, ListItemText, Divider, Button } from '@material-ui/core';
-import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
-import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import CardMedia from '@material-ui/core/CardMedia';
-
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import Grid from '@mui/material/Grid';
+import { Typography, DialogContent, DialogActions, DialogContentText, InputBase, List, ListItem, Avatar, SvgIcon, ListItemText, Divider, Button } from '@mui/material';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import CardMedia from '@mui/material/CardMedia';
+import { alpha } from '@mui/system/colorManipulator';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/material/styles';
 import classNames from 'classnames';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import AppBar from '@material-ui/core/AppBar';
-import SearchIcon from '@material-ui/icons/Search';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import AppBar from '@mui/material/AppBar';
+import SearchIcon from '@mui/icons-material/Search';
+import GetAppIcon from '@mui/icons-material/GetApp';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { JAWHAR_API  } from '../constants';
 import Utils from '../utils';
 
@@ -54,11 +53,11 @@ const styles = theme => ({
     search: {
         position: 'absolute',
         borderRadius: theme.shape.borderRadius,
-        backgroundColor: fade(theme.palette.common.white, 0.15),
+        backgroundColor: alpha(theme.palette.common.white, 0.15),
         '&:hover': {
-          backgroundColor: fade(theme.palette.common.white, 0.5),
+          backgroundColor: alpha(theme.palette.common.white, 0.5),
         },
-        borderColor: fade(theme.palette.common.black, 0.15),
+        borderColor: alpha(theme.palette.common.black, 0.15),
         borderWidth: '1px',
         borderStyle: 'solid',
         marginLeft: 0,
@@ -86,7 +85,7 @@ const styles = theme => ({
     },
     appRow: {
         '&:hover': {
-            backgroundColor: fade(theme.palette.common.white, 0.5),
+            backgroundColor: alpha(theme.palette.common.white, 0.5),
           }
     },
 
@@ -140,9 +139,9 @@ const ExpansionPanel = withStyles({
     expanded: {
       margin: 'auto',
     },
-  })(MuiExpansionPanel);
+  })(Accordion);
 
-const ExpansionPanelSummary = withStyles({
+const MyAccordionSummary = withStyles({
     root: {
         backgroundColor: 'rgba(0,0,0,.00)',
         borderBottom: '1px solid rgba(0,0,0,.125)',
@@ -159,16 +158,16 @@ const ExpansionPanelSummary = withStyles({
         },
     },
     expanded: {},
-})(props => <MuiExpansionPanelSummary {...props} />);
+})(props => <AccordionSummary {...props} />);
 
-ExpansionPanelSummary.muiName = 'ExpansionPanelSummary';
+MyAccordionSummary.muiName = 'AccordionSummary';
 
-const ExpansionPanelDetails = withStyles(theme => ({
+const MyAccordionDetails = withStyles(theme => ({
     root: {
       padding: theme.spacing.unit * 2,
       backgroundColor: 'rgba(0,0,0,.009)'
     },
-}))(MuiExpansionPanelDetails);
+}))(AccordionDetails);
 
 class AppStorePage extends React.Component {
 
@@ -242,7 +241,7 @@ class AppStorePage extends React.Component {
                  // let icon = Utils.jsonToElement("svg", app.icon)
                  return (
                     <ExpansionPanel expanded={expandedApp === app.ID} onChange={this.expandApp(app.ID)}>
-                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <MyAccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <List>
                                 <ListItem>
                                   <CardMedia dangerouslySetInnerHTML={{__html: app.Icon}}>
@@ -252,8 +251,8 @@ class AppStorePage extends React.Component {
                                     />
                                 </ListItem>
                             </List>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
+                        </MyAccordionSummary>
+                        <MyAccordionDetails>
                             <List dense={true}>
                                 <ListItem>
                                 {app.LongDescription}
@@ -273,7 +272,7 @@ class AppStorePage extends React.Component {
                                    </Button>
                                 </ListItem>
                             </List>
-                        </ExpansionPanelDetails>
+                        </MyAccordionDetails>
                     </ExpansionPanel>)
                  })}
 

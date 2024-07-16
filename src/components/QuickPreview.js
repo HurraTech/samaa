@@ -1,13 +1,13 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
+import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
 import Draggable from 'react-draggable';
-import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import injectSheet from 'react-jss/lib/injectSheet';
+import Typography from '@mui/material/Typography';
+import { withStyles } from '@mui/material/styles';
+import MuiDialogTitle from '@mui/material/DialogTitle';
+import Dialog from '@mui/material/Dialog';
+import MuiDialogContent from '@mui/material/DialogContent';
+import injectSheet from 'react-jss';
 
 const styles = {
   '@global': {

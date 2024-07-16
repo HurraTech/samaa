@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { withStyles, withTheme } from '@material-ui/core/styles';
-import TableCell from '@material-ui/core/TableCell';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
+import { withStyles, withTheme } from '@mui/material/styles';
+import TableCell from '@mui/material/TableCell';
+import TableSortLabel from '@mui/material/TableSortLabel';
 import {
   AutoSizer,
   Column,
@@ -11,14 +11,14 @@ import {
   Table,
   InfiniteLoader,
 } from 'react-virtualized';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
 import Moment from 'react-moment';
 import Utils from '../utils';
-import OpenIcon from '@material-ui/icons/OpenInNew';
-import DownloadIcon from '@material-ui/icons/GetApp';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterIcon from '@material-ui/icons/FilterList';
+import OpenIcon from '@mui/icons-material/OpenInNew';
+import DownloadIcon from '@mui/icons-material/GetApp';
+import DeleteIcon from '@mui/icons-material/Delete';
+import FilterIcon from '@mui/icons-material/FilterList';
 import { JAWHAR_API  } from '../constants';
 
 const STATUS_LOADING = 1;

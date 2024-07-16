@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Paper from '@mui/material/Paper';
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 import Alert  from '@mui/lab/Alert';
 import axios from 'axios';
 import FilePreview from '../components/FilePreview';

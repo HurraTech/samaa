@@ -5,7 +5,7 @@ import CardMedia from '@mui/material/CardMedia';
 import axios from 'axios';
 import Grid from '@mui/material/Grid';
 import PropTypes from 'prop-types';
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 import { CardActions, SvgIcon, Typography, CardHeader, Button, ButtonBase } from '@mui/material'
 import {Link} from 'react-router-dom';
 import classNames from 'classnames';

@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Draggable from 'react-draggable';
 import Typography from '@mui/material/Typography';
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 import MuiDialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import MuiDialogContent from '@mui/material/DialogContent';

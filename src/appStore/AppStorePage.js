@@ -14,7 +14,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import CardMedia from '@mui/material/CardMedia';
 import { alpha } from '@mui/system/colorManipulator';
 import PropTypes from 'prop-types';
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 import classNames from 'classnames';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';

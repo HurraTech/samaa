@@ -10,7 +10,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { alpha } from '@mui/system/colorManipulator';
-import { withStyles } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import HomeIcon from '@mui/icons-material/Home'
@@ -35,15 +34,18 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import SearchPage from './search/SearchPage';
 import SettingsPage from './settings/SettingsPage'
 import AppStorePage from './appStore/AppStorePage'
-import { Route, Link, Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import BrowserPage from './browser/BrowserPage'
 import { create } from 'jss';
 import Hidden from '@mui/material/Hidden';
 import {
   createGenerateClassName,
-  jssPreset
+  jssPreset,
+  withStyles
 } from '@mui/styles';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider, adaptV4Theme } from '@mui/material/styles';
 
 import blackThemeFile from './themes/black';
 import HomePage from './home/HomePage';
@@ -378,7 +380,7 @@ class App extends React.Component {
     const { classes, theme } = this.props;
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-    const blackTheme = createTheme(blackThemeFile);
+    const blackTheme = createTheme(adaptV4Theme(blackThemeFile));
 
     if (!this.state.appReady) {
       return <div />
@@ -443,11 +445,12 @@ class App extends React.Component {
         <div class="hurralogo" className={classes.hurraLogo} />
         <Hidden lgUp>
           <IconButton onClick={this.handleDrawerClose}>
-            {theme.direction === 'ltr' ? (
+            <ChevronLeftIcon />
+            {/* {theme.direction === 'ltr' ? (
               <ChevronLeftIcon />
             ) : (
               <ChevronRightIcon />
-            )}
+            )} */}
           </IconButton>
         </Hidden>
       </div>
@@ -635,37 +638,39 @@ class App extends React.Component {
           })}
         >
           <div className={classes.drawerHeader} />
-          <Route exact={true} path="/" render={() => (<HomePage apps={this.state.apps} sources={this.state.sources} stats={this.state.stats} />)}/>
-          <Route path="/(browse|browse/preview)/sources/:sourceType/:sourceID/:path*" render={({match}) =>
-                    (<BrowserPage sourceType={match.params.sourceType}
-                                  sourceID={match.params.sourceID}
-                                  source={this.state.sources.filter(s => s.Type == match.params.sourceType && s.ID == match.params.sourceID)[0]}
-                                  path={`sources/${match.params.sourceType}/${match.params.sourceID}/${match.params.path || ""}/`} />)}/>
+          <Routes>
+            <Route exact={true} path="/" render={() => (<HomePage apps={this.state.apps} sources={this.state.sources} stats={this.state.stats} />)}/>
+            <Route path="/(browse|browse/preview)/sources/:sourceType/:sourceID/:path*" render={({match}) =>
+                      (<BrowserPage sourceType={match.params.sourceType}
+                                    sourceID={match.params.sourceID}
+                                    source={this.state.sources.filter(s => s.Type == match.params.sourceType && s.ID == match.params.sourceID)[0]}
+                                    path={`sources/${match.params.sourceType}/${match.params.sourceID}/${match.params.path || ""}/`} />)}/>
 
-          <Route path="/search/:sourceType/:sourceID/:action?" render={ ({match}) =>
-                    (<SearchPage sources={this.state.sources}
-                                 selectSourceType={match.params.sourceType}
-                                 selectSourceID={match.params.sourceID} />) } />
+            <Route path="/search/:sourceType/:sourceID/:action?" render={ ({match}) =>
+                      (<SearchPage sources={this.state.sources}
+                                  selectSourceType={match.params.sourceType}
+                                  selectSourceID={match.params.sourceID} />) } />
 
-          <Route path="/search/:sourceType/:sourceID/preview/:path+" render={({match}) => (
-            <FilePreview
-              open={true}
-              onCloseClick={() => this.props.history.goBack()}
-              file={match.params.path}
-            />
-          )}/>
+            <Route path="/search/:sourceType/:sourceID/preview/:path+" render={({match}) => (
+              <FilePreview
+                open={true}
+                onCloseClick={() => this.props.history.goBack()}
+                file={match.params.path}
+              />
+            )}/>
 
-          <Route path="/browse/preview/:path+" render={({match}) => (
-            <FilePreview
-              open={true}
-              onCloseClick={() => this.props.history.goBack()}
-              file={match.params.path}
-            />
-          )}/>
+            <Route path="/browse/preview/:path+" render={({match}) => (
+              <FilePreview
+                open={true}
+                onCloseClick={() => this.props.history.goBack()}
+                file={match.params.path}
+              />
+            )}/>
 
-          <Route path="/manage" render={() => (<SettingsPage sources={this.state.sources} drives={this.state.drives} />)}/>
-          <Route path="/appStore" render={() => (<AppStorePage sources={this.state.sources} />)}/>
-          <Route path="/apps/:auid+" render={({match}) => (<AppLoader auid={match.params.auid} />)}/>
+            <Route path="/manage" render={() => (<SettingsPage sources={this.state.sources} drives={this.state.drives} />)}/>
+            <Route path="/appStore" render={() => (<AppStorePage sources={this.state.sources} />)}/>
+            <Route path="/apps/:auid+" render={({match}) => (<AppLoader auid={match.params.auid} />)}/>
+          </Routes>
         </main>
       </div>
   </ThemeProvider>
@@ -680,4 +685,4 @@ App.propTypes = {
   onPartitionClick: PropTypes.func
 };
 
-export default withRoute(withStyles(styles, { withTheme: true })(App));
+export default withRoute(withStyles({}, { withTheme: true })(App));

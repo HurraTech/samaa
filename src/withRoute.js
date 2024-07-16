@@ -6,7 +6,7 @@ export default function withRoute<ComponentProps>(Component: React.FunctionCompo
       const navigate = useNavigate();
       const params = useParams();
 
-      return <Component {...props} router={{ location, navigate, params }} />;
+      return <Component {...props} history={{ location, navigate, params }} />;
   }
 
   return ComponentWithRouterProp;

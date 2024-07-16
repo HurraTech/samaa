@@ -30,8 +30,11 @@
     "react-router": "6.24.1",
     "react-router-dom": "^6.24.1",
     "react-scripts": "^5.0.1",
-    "react-virtualized": "^9.22.5",
+    "react-virtuoso": "^4.7.12",
     "serve": "^14.2.3"
+  },
+  "resolutions": {
+    "@babel/runtime": "7.18"
   },
   "scripts": {
     "start": "react-scripts start",

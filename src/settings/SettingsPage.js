@@ -10,7 +10,7 @@ import CloudIcon from '@mui/icons-material/Cloud';
 import Fab from '@mui/material/Fab';
 import Grid from '@mui/material/Grid';
 import PropTypes from 'prop-types';
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 import { Typography, DialogContent, DialogActions, DialogContentText } from '@mui/material';
 import classNames from 'classnames';
 import $ from 'jquery'

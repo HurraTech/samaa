@@ -10,7 +10,6 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom'
 
-// ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.getElementById('root'));
 const rootElement =  document.getElementById('root');
 const root =  createRoot(rootElement);
 root.render(<BrowserRouter><App /></BrowserRouter>);

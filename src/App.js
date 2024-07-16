@@ -380,7 +380,7 @@ class App extends React.Component {
     const { classes, theme } = this.props;
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-    const blackTheme = createTheme(adaptV4Theme(blackThemeFile));
+    const blackTheme = createTheme(blackThemeFile);
 
     if (!this.state.appReady) {
       return <div />
@@ -685,4 +685,4 @@ App.propTypes = {
   onPartitionClick: PropTypes.func
 };
 
-export default withRoute(withStyles({}, { withTheme: true })(App));
+export default withRoute(withStyles(styles, { withTheme: true })(App));

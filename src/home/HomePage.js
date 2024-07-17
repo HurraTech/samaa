@@ -406,7 +406,7 @@ class HomePage extends React.Component {
                         <Grid container spacing={2}>
 				         	<Grid item xs={12}>
                                <Typography variant="h4" className={classes.dashboardHeading}>Storage Usage</Typography><br/>
-				               <Pie data={this.state.capacityChartData} width="180" height="180"   options={{ maintainAspectRatio: false }} />
+				               {/* <Pie data={this.state.capacityChartData} width="180" height="180"   options={{ maintainAspectRatio: false }} /> */}
 				         	</Grid>
 				         	<Grid item xs={12} className={classes.selectDeviceGridItem}>
 							  <Select value={this.state.selectedChartSource}  onChange={(event) => this.changeChartStorage(event.target.value) }>
@@ -427,7 +427,7 @@ class HomePage extends React.Component {
                         <Grid container spacing={2}>
 				         	<Grid item xs={12}>
                                <Typography variant="h4" className={classes.dashboardHeading}>Index Storage Usage</Typography><br/>
-				               <Bar data={this.state.indexChartData} width="120" height="180"   options={{ maintainAspectRatio: false, indexAxis: 'y' }} />
+				               {/* <Bar data={this.state.indexChartData} width="120" height="180"   options={{ maintainAspectRatio: false, indexAxis: 'y' }} /> */}
 				         	</Grid>
 				     	</Grid>
 				        <Grid item xs={12} className={classes.selectDeviceGridItem}>

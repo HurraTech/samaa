@@ -36,6 +36,7 @@ import AppStorePage from './appStore/AppStorePage'
 import { Link, Redirect } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import clsx from 'clsx';
+import { paperClasses } from "@mui/material/Paper";
 
 import BrowserPage from './browser/BrowserPage'
 import { create } from 'jss';
@@ -78,13 +79,19 @@ const classes = {
   hurraLogo: `${PREFIX}-hurraLogo`,
   hide: `${PREFIX}-hide`,
   drawer: `${PREFIX}-drawer`,
-  drawerPaper: `${PREFIX}-drawerPaper`,
+  drawerPaper: `${paperClasses.root}`,
   content: `${PREFIX}-content`,
   contentShift: `${PREFIX}-contentShift`,
   nested: `${PREFIX}-nested`,
   sourceNameText: `${PREFIX}-sourceNameText`,
 }
-  
+
+const StyledDrawer = styled(Drawer)(({ theme }) => ({
+  [`& .${classes.drawerPaper}`]: {
+    width: drawerWidth,
+  }
+}))
+
 const Root = styled('div')(({ theme }) => ({
   [`&.${classes.root}`]: {
     width: '100%',
@@ -216,9 +223,6 @@ const Root = styled('div')(({ theme }) => ({
       width: drawerWidth,
       flexShrink: 0,
     },
-  },
-  [`& .${classes.drawerPaper}`]: {
-    width: drawerWidth,
   },
   [`& .${classes.content}`]: {
     flexGrow: 1,
@@ -629,22 +633,16 @@ const App = (props) => {
       {renderMenu}
       {renderMobileMenu}
       <Hidden lgUp>
-        <Drawer
-          classes={{
-            paper: classes.drawerPaper,
-          }}
+        <StyledDrawer
           variant="temporary"
           anchor="left"
           open={open}
-          classes={{
-            paper: classes.drawerPaper,
-          }}  
         >
           {drawerContent}
-        </Drawer>
+        </StyledDrawer>
       </Hidden>
       <Hidden mdDown>
-        <Drawer
+        <StyledDrawer
           className={classes.drawer}
           variant="permanent"
           anchor="left"
@@ -654,7 +652,7 @@ const App = (props) => {
           }}
         >
           {drawerContent}
-        </Drawer>
+        </StyledDrawer>
       </Hidden>
       <main
         className={clsx(classes.content, {

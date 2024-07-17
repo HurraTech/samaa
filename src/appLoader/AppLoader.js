@@ -1,19 +1,19 @@
 import React from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
 import axios from 'axios';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import { CardActions, SvgIcon, Typography, CardHeader, Button, ButtonBase } from '@material-ui/core'
+import { withStyles } from '@mui/styles';
+import { CardActions, SvgIcon, Typography, CardHeader, Button, ButtonBase } from '@mui/material'
 import {Link} from 'react-router-dom';
 import classNames from 'classnames';
-import { fade } from '@material-ui/core/styles/colorManipulator';
-import OpenIcon from '@material-ui/icons/OpenInNew'
-import Chip from '@material-ui/core/Chip';
-import FaceIcon from '@material-ui/icons/Face';
-import RunningIcon from '@material-ui/icons/CheckCircle';
+import { alpha } from '@mui/system/colorManipulator';
+import OpenIcon from '@mui/icons-material/OpenInNew'
+import Chip from '@mui/material/Chip';
+import FaceIcon from '@mui/icons-material/Face';
+import RunningIcon from '@mui/icons-material/CheckCircle';
 import Iframe from 'react-iframe';
 import { JAWHAR_API } from '../constants';
 
@@ -26,9 +26,9 @@ const styles = theme => ({
         display: 'flex',
         alignItems: 'center',
         // cursor: 'pointer',
-        backgroundColor: fade(theme.palette.common.white, 1),
+        backgroundColor: alpha(theme.palette.common.white, 1),
         '&:hover': {
-            backgroundColor: fade(theme.palette.common.white, 0.02),
+            backgroundColor: alpha(theme.palette.common.white, 0.02),
           },
 
       },

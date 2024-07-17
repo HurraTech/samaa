@@ -1,7 +1,7 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
+import Paper from '@mui/material/Paper';
 import Draggable from 'react-draggable';
-import Dialog from '@material-ui/core/Dialog';
+import Dialog from '@mui/material/Dialog';
 import Iframe from 'react-iframe';
 import { JAWHAR_API  } from '../constants';
 

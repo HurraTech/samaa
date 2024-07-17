@@ -1,75 +1,106 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import { fade } from '@material-ui/core/styles/colorManipulator';
-import { withStyles } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import HomeIcon from '@material-ui/icons/Home'
-import MoreIcon from '@material-ui/icons/MoreVert';
-import classNames from 'classnames';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import InputBase from '@mui/material/InputBase';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import { alpha } from '@mui/system/colorManipulator';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import HomeIcon from '@mui/icons-material/Home'
+import MoreIcon from '@mui/icons-material/MoreVert';
 import axios from 'axios';
-import Collapse from '@material-ui/core/Collapse';
-import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import BrowserIcon from '@material-ui/icons/Folder';
-import SettingsIcon from '@material-ui/icons/Settings';
-import AppsIcon from '@material-ui/icons/Apps';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import Collapse from '@mui/material/Collapse';
+import Drawer from '@mui/material/Drawer';
+import CssBaseline from '@mui/material/CssBaseline';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import BrowserIcon from '@mui/icons-material/Folder';
+import SettingsIcon from '@mui/icons-material/Settings';
+import AppsIcon from '@mui/icons-material/Apps';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import SearchPage from './search/SearchPage';
 import SettingsPage from './settings/SettingsPage'
 import AppStorePage from './appStore/AppStorePage'
-import { Route, Link, withRouter, Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import clsx from 'clsx';
+import { paperClasses } from "@mui/material/Paper";
+
 import BrowserPage from './browser/BrowserPage'
 import { create } from 'jss';
-import Hidden from '@material-ui/core/Hidden';
+import Hidden from '@mui/material/Hidden';
 import {
   createGenerateClassName,
   jssPreset,
-  MuiThemeProvider,
-  createMuiTheme,
-} from '@material-ui/core/styles';
+  withStyles
+} from '@mui/styles';
+import { styled } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import blackThemeFile from './themes/black';
 import HomePage from './home/HomePage';
 import AppLoader from './appLoader/AppLoader';
 import { JAWHAR_API  } from './constants';
 import FilePreview from './components/FilePreview';
-import Tooltip from '@material-ui/core/Tooltip';
-
-const jss = create({
-  ...jssPreset(),
-  insertionPoint: 'jss-insertion-point',
-});
+import Tooltip from '@mui/material/Tooltip';
+import withRoute from "./withRoute";
 
 const generateClassName = createGenerateClassName();
 
 const drawerWidth = 240;
 
-const styles = theme => ({
-  root: {
+const PREFIX = 'App';
+const classes = {
+  root: `${PREFIX}-root`,
+  grow: `${PREFIX}-grow`,
+  appBar: `${PREFIX}-appBar`,
+  appBarShift: `${PREFIX}-appBarShift`,
+  menuButton: `${PREFIX}-menuButton`,
+  title: `${PREFIX}-title`,
+  search: `${PREFIX}-search`,
+  searchIcon: `${PREFIX}-searchIcon`,
+  inputRoot: `${PREFIX}-inputRoot`,
+  inputInput: `${PREFIX}-inputInput`,
+  sectionDesktop: `${PREFIX}-sectionDesktop`,
+  sectionMobile: `${PREFIX}-sectionMobile`,
+  drawerHeader: `${PREFIX}-drawerHeader`,
+  hurraLogo: `${PREFIX}-hurraLogo`,
+  hide: `${PREFIX}-hide`,
+  drawer: `${PREFIX}-drawer`,
+  drawerPaper: `${paperClasses.root}`,
+  content: `${PREFIX}-content`,
+  contentShift: `${PREFIX}-contentShift`,
+  nested: `${PREFIX}-nested`,
+  sourceNameText: `${PREFIX}-sourceNameText`,
+}
+
+const StyledDrawer = styled(Drawer)(({ theme }) => ({
+  [`& .${classes.drawerPaper}`]: {
+    width: drawerWidth,
+  }
+}))
+
+const Root = styled('div')(({ theme }) => ({
+  [`&.${classes.root}`]: {
     width: '100%',
     display: 'flex',
   },
-  grow: {
+  [`& .${classes.grow}`]: {
     flexGrow: 1,
   },
-  appBar: {
+  [`& .${classes.appBar}`]: {
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -79,7 +110,7 @@ const styles = theme => ({
       marginLeft: drawerWidth,
     },
   },
-  appBarShift: {
+  [`& .${classes.appBarShift}`]: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
     transition: theme.transitions.create(['margin', 'width'], {
@@ -88,11 +119,11 @@ const styles = theme => ({
     }),
   },
 
-  menuButton: {
+  [`& .${classes.menuButton}`]: {
     marginLeft: -12,
     marginRight: 20,
   },
-  title: {
+  [`& .${classes.title}`]: {
     display: 'none',
     [theme.breakpoints.up('sm')]: {
       display: 'block',
@@ -101,23 +132,23 @@ const styles = theme => ({
       letterSpacing: '2px',
     },
   },
-  search: {
+  [`& .${classes.search}`]: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
     '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
-    marginRight: theme.spacing.unit * 2,
+    marginRight: theme.spacing(2),
     marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing.unit * 3,
+      marginLeft: theme.spacing(3),
       width: 'auto',
     },
   },
-  searchIcon: {
-    width: theme.spacing.unit * 9,
+  [`& .${classes.searchIcon}`]: {
+    width: theme.spacing(9),
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -126,35 +157,35 @@ const styles = theme => ({
     justifyContent: 'center',
   },
 
-  inputRoot: {
+  [`& .${classes.inputRoot}`]: {
     color: 'inherit',
     width: '100%',
   },
-  inputInput: {
+  [`& .${classes.inputInput}`]: {
     paddingTop: theme.spacing.unit,
-    paddingRight: theme.spacing.unit * 4,
+    paddingRight: theme.spacing(4),
     paddingBottom: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 10,
+    paddingLeft: theme.spacing(10),
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
       width: 200,
     },
   },
-  sectionDesktop: {
+  [`& .${classes.sectionDesktop}`]: {
     display: 'none',
     [theme.breakpoints.up('md')]: {
       display: 'flex',
     },
   },
-  sectionMobile: {
+  [`& .${classes.sectionMobile}`]: {
     display: 'flex',
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
   },
 
-  drawerHeader: {
+  [`& .${classes.drawerHeader}`]: {
     display: 'flex',
     alignItems: 'center',
     padding: '0 8px',
@@ -163,7 +194,7 @@ const styles = theme => ({
   },
 
 
-  hurraLogo: {
+  [`& .${classes.hurraLogo}`]: {
     [theme.breakpoints.up('lg')]: {
       backgroundPosition: "50%",
     },
@@ -180,41 +211,31 @@ const styles = theme => ({
     height: "50px",
   },
 
-  toolbar: {
+  [`& .${classes.toolbar}`]: {
     backgroundColor: '#792333'
   },
 
-  hide: {
+  [`& .${classes.hide}`]: {
     display: 'none',
   },
-  drawer: {
+  [`& .${classes.drawer}`]: {
     [theme.breakpoints.up('lg')]: {
       width: drawerWidth,
       flexShrink: 0,
     },
   },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0px 8px',
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
-  },
-  content: {
+  [`& .${classes.content}`]: {
     flexGrow: 1,
-    paddingLeft: theme.spacing.unit * 3,
-    paddingRight: theme.spacing.unit * 3,
-    paddingTop: theme.spacing.unit * 3,
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+    paddingTop: theme.spacing(3),
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: 0,
   },
-  contentShift: {
+  [`& .${classes.contentShift}`]: {
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
@@ -222,99 +243,115 @@ const styles = theme => ({
     marginLeft: 0,
   },
 
-  nested: {
-    paddingLeft: theme.spacing.unit * 4,
+  [`& .${classes.nested}`]: {
+    paddingLeft: theme.spacing(4),
     maxWidth: `${drawerWidth}px`,
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
   },
 
-  sourceNameText: {
+  [`& .${classes.sourceNameText}`]: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     maxWidth: `${drawerWidth - 30}px`
   }
 
-});
+}))
 
-class App extends React.Component {
-  state = {
-    anchorEl: null,
-    mobileMoreAnchorEl: null,
-    open: false,
-    searchQuery: '',
-    currentPage: 0,
-    sources: [],
-    drives: [],
-    browserListOpen: true,
-    appReady: false,
+const blackTheme = createTheme(blackThemeFile);
+
+function AppWrapper(props) {
+  return <ThemeProvider theme={blackTheme}><App {...props} /></ThemeProvider>;
+}
+  
+
+const App = (props) => {
+ 
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [sources, setSources] = useState([]);
+  const [drives, setDrives] = useState([]);
+  const [browserListOpen, setBrowserListOpen] = useState(true);
+  const [appReady, setAppReady] = useState(false);
+  const [pendingSourcesRequest, setPendingSourcesRequest] = useState(false);
+  const [pendingAppsRequest, setPendingAppsRequest] = useState(false);
+  const [apps, setApps] = useState(false);
+  const [pendingStatsRequest, setPendingStatsRequest] = useState(false);
+  const [stats, setStats] = useState(null);
+  const theme = useTheme();
+  let refreshDataTimer = null;
+
+  const handleDrawerOpen = () => {
+    setOpen(true)
   };
 
-  handleDrawerOpen = () => {
-    this.setState({ open: true });
+  const handleDrawerClose = () => {
+
+    setOpen(false)
   };
 
-  handleDrawerClose = () => {
-    console.log("Drawer close")
-    this.setState({ open: false });
-  };
-
-  handleBrowserClick = (event) => {
+  const handleBrowserClick = (event) => {
     event.preventDefault();
-    this.setState(state => ({ browserListOpen: !state.browserListOpen }));
+    setBrowserListOpen(!browserListOpen);
   };
 
-  componentDidMount() {
-    this.refreshData()
-    this.refreshDataTimer = setInterval(()=> this.refreshData(), 2500);
-  }
+  useEffect(() => {
+    refreshData()
+    refreshDataTimer = setInterval(()=> refreshData(), 2500);
+    return () => {
+      clearInterval(refreshDataTimer)
+    }
+  })
 
-  componentWillUnmount() {
-    clearInterval(this.refreshDataTimer)
-  }
+  const refreshData = (msg, data) => {
 
-  refreshData = (msg, data) => {
-
-    if (! this.state.pendingSourcesRequest && (window.location.pathname.startsWith("/manage") || !this.state.appReady ))
+    if (! pendingSourcesRequest && (window.location.pathname.startsWith("/manage") || !appReady ))
     {
-       this.setState({pendingSourcesRequest: true})
+       setPendingSourcesRequest(true)
        axios
        .get(`${JAWHAR_API}/sources`)
        .then(res => {
            const response = res.data;
            var partitions = [].concat.apply([], response.map( d => d.Partitions))
            console.log("Sources", partitions)
-           this.setState({ appReady: true, sources: partitions, drives: response, pendingSourcesRequest: false  })
+           setAppReady(true)
+           setSources(partitions) 
+           setDrives(response)
+           setPendingSourcesRequest(false)
        });
     }
 
-   if (! this.state.pendingAppsRequest && window.location.pathname == "/")
+   if (! pendingAppsRequest && window.location.pathname == "/")
    {
-      this.setState({pendingAppsRequest: true})
+      setPendingAppsRequest(true)
       axios
        .get(`${JAWHAR_API}/apps`)
        .then(res => {
            const response = res.data;
-           this.setState({ apps: response, pendingAppsRequest: false })
+           setApps(response)
+           setPendingAppsRequest(false)
        });
    }
 
-   if (! this.state.pendingStatsRequest && window.location.pathname == "/" )
+   if (! pendingStatsRequest && window.location.pathname == "/" )
    {
-      this.setState({pendingStatsRequest: true})
+      setPendingStatsRequest(true)
       axios
        .get(`${JAWHAR_API}/system/stats`)
        .then(res => {
            const response = res.data;
-           console.log("STATS!!!", response)
-           this.setState({ stats: response, pendingStatsRequest: false })
+           setStats(response)
+           setPendingStatsRequest(false)
        });
     }
   }
 
-  transition = event => {
+  const transition = event => {
     if (event.currentTarget.pathname )
     {
       event.preventDefault();
@@ -325,19 +362,19 @@ class App extends React.Component {
     }
   }
 
-  handlePartitionClick = event => {
-    this.transition(event)
-    if (this.props.onPartitionClick) {
-      this.props.onPartitionClick(event.currentTarget.pathname)
+  const handlePartitionClick = event => {
+    transition(event)
+    if (props.onPartitionClick) {
+      props.onPartitionClick(event.currentTarget.pathname)
     }
   }
 
-  onSearchBarKeyPress = event => {
+  const onSearchBarKeyPress = event => {
     if (event.key === 'Enter') {
-      let searchable = this.state.sources.filter(s => s.Status == "mounted" && s.IndexStatus != "")
+      let searchable = sources.filter(s => s.Status == "mounted" && s.IndexStatus != "")
 
       if (searchable.length > 0) {
-        this.props.history.push({
+        props.history.push({
           pathname: `/search/${searchable[0].Type}/${searchable[0].ID}`,
           search: `q=${event.target.value}`,
         });
@@ -347,101 +384,97 @@ class App extends React.Component {
     }
   };
 
-  firstSearchLink = () => {
-    let searchable = this.state.sources.filter(s => s.Status == "mounted" && s.IndexStatus != "")
+  const firstSearchLink = () => {
+    let searchable = sources.filter(s => s.Status == "mounted" && s.IndexStatus != "")
     if (searchable.length > 0)
       return `/search/${searchable[0].Type}/${searchable[0].ID}`
     else
       return false
   }
 
-  handleProfileMenuOpen = event => {
-    this.setState({ anchorEl: event.currentTarget });
+  const handleProfileMenuOpen = event => {
+    setAnchorEl(event.currentTarget)
   };
 
-  handleMenuClose = () => {
-    this.setState({ anchorEl: null });
-    this.handleMobileMenuClose();
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+    handleMobileMenuClose();
   };
 
-  handleMobileMenuOpen = event => {
-    this.setState({ mobileMoreAnchorEl: event.currentTarget });
+  const handleMobileMenuOpen = event => {
+    setMobileMoreAnchorEl(event.currentTarget)
   };
 
-  handleMobileMenuClose = () => {
-    this.setState({ mobileMoreAnchorEl: null });
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null)
   };
 
-  render() {
-    const { anchorEl, mobileMoreAnchorEl, open } = this.state;
-    const { classes, theme } = this.props;
-    const isMenuOpen = Boolean(anchorEl);
-    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-    const blackTheme = createMuiTheme(blackThemeFile);
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-    if (!this.state.appReady) {
-      return <div />
-    }
+  if (!appReady) {
+    return <div />
+  }
 
-    const renderMenu = (
-      <Menu
-        anchorEl={anchorEl}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={isMenuOpen}
-        onClose={this.handleMenuClose}
-      >
-        <MenuItem>
-          <Link to={`/manage/`} style={{ textDecoration: 'none', color: 'black' }} onClick={this.handleMenuClose}>Manage Storage</Link>
-        </MenuItem>
-      </Menu>
-    );
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem>
+        <Link to={`/manage/`} style={{ textDecoration: 'none', color: 'black' }} onClick={handleMenuClose}>Manage Storage</Link>
+      </MenuItem>
+    </Menu>
+  );
 
-    const renderMobileMenu = (
-      <Menu
-        anchorEl={mobileMoreAnchorEl}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={isMobileMenuOpen}
-        onClose={this.handleMobileMenuClose}
-      >
-        <MenuItem>
-          <IconButton color="inherit">
-              <SettingsIcon />
-          </IconButton>
-          <p>Manage</p>
-        </MenuItem>
-        {/* <MenuItem>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <MailIcon />
-            </Badge>
-          </IconButton>
-          <p>Messages</p>
-        </MenuItem>
-        <MenuItem>
-          <IconButton color="inherit">
-            <Badge badgeContent={11} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <p>Notifications</p>
-        </MenuItem>
-        <MenuItem onClick={this.handleProfileMenuOpen}>
-          <IconButton color="inherit">
-            <AccountCircle />
-          </IconButton>
-          <p>Profile</p>
-        </MenuItem> */}
-      </Menu>
-    );
+  const renderMobileMenu = (
+    <Menu
+      anchorEl={mobileMoreAnchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
+    >
+      <MenuItem>
+        <IconButton color="inherit">
+            <SettingsIcon />
+        </IconButton>
+        <p>Manage</p>
+      </MenuItem>
+      {/* <MenuItem>
+        <IconButton color="inherit">
+          <Badge badgeContent={4} color="secondary">
+            <MailIcon />
+          </Badge>
+        </IconButton>
+        <p>Messages</p>
+      </MenuItem>
+      <MenuItem>
+        <IconButton color="inherit">
+          <Badge badgeContent={11} color="secondary">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+        <p>Notifications</p>
+      </MenuItem>
+      <MenuItem onClick={handleProfileMenuOpen}>
+        <IconButton color="inherit">
+          <AccountCircle />
+        </IconButton>
+        <p>Profile</p>
+      </MenuItem> */}
+    </Menu>
+  );
 
-    const drawerContent = (          
-      <div>
-        <div className={classes.drawerHeader}>
-        <div class="hurralogo" className={classes.hurraLogo} />
+  const drawerContent = (          
+    <div>
+      <div className={classes.drawerHeader}>
+        <div className={classes.hurraLogo} />
         <Hidden lgUp>
-          <IconButton onClick={this.handleDrawerClose}>
+          <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? (
               <ChevronLeftIcon />
             ) : (
@@ -449,207 +482,201 @@ class App extends React.Component {
             )}
           </IconButton>
         </Hidden>
-      </div>
+    </div>
 
-      <Divider />
-      <List>
-        <Link to={`/`} style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerClose} button key="Home" selected={this.props.history.location.pathname == "/"}>
-              <ListItemIcon><HomeIcon /></ListItemIcon>
-              <ListItemText primary="Home" style={{color:'black'}} />
-            </ListItem>
-        </Link>
-          <Link to={`/appStore/`} style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerClose} button key="AppStore" selected={this.props.history.location.pathname.startsWith(`/appStore/`)}>
-              <ListItemIcon><AppsIcon /></ListItemIcon>
-              <ListItemText primary="App Store" style={{color:'black'}} />
-            </ListItem>
-          </Link>
-        <Divider />
-        { this.firstSearchLink() ? (<Link to={`${this.firstSearchLink()}`} style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerClose} button key="Search" selected={this.props.history.location.pathname.startsWith(`/search/`)}>
-              <ListItemIcon><SearchIcon /></ListItemIcon>
-              <ListItemText primary="Search" style={{color:'black'}} />
-            </ListItem>
-          </Link>) : (<Link to={`${this.firstSearchLink()}`}  className="disabledCursor" onClick={ (event) => event.preventDefault()} style={{ textDecoration: 'none' }}>
-            <ListItem  button key="Search" selected={this.props.history.location.pathname.startsWith(`/search/`)}>
-              <ListItemIcon>
-                <SearchIcon />
-              </ListItemIcon>
-              <Tooltip title="You don't have any mounted storage with indices. Please either create indices to search or mount storages that you have already indexed.">
-                <ListItemText primary="Search" style={{color:'black'}} />
-              </Tooltip>
-            </ListItem>
-          </Link>)
-        }
-        <ListItem button key="Browse" selected={this.props.history.location.pathname.startsWith(`/browse/`)} onClick={this.handleBrowserClick}>
-            <ListItemIcon><BrowserIcon /></ListItemIcon>
-            <ListItemText primary="Cloud Drive" style={{color:'black'}} />
-            {this.state.browserListOpen ? <ExpandLess /> : <ExpandMore />}
+    <Divider />
+    <List>
+      <Link to={`/`} style={{ textDecoration: 'none' }}>
+          <ListItem onClick={handleDrawerClose} button key="Home" selected={props.history.location.pathname == "/"}>
+            <ListItemIcon><HomeIcon /></ListItemIcon>
+            <ListItemText primary="Home" style={{color:'black'}} />
           </ListItem>
-          <Collapse in={this.state.browserListOpen} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-              {this.state.sources.filter(s => s.Status == "mounted").map(source => {
-                let icon_class = "fas fa-database"
-                if (source.IsRemovable)
-                  icon_class = "fab fa-usb"
-                // else if (source.source_type == "internal")
-                //   icon_class = "fab fa-hdd"
-                // return source.drive_partitions.filter(p => p.status == "mounted").map(partition => {
-                    return <Link
-                    to={`/browse/sources/${source.Type}/${source.ID}/`}
-                    style={{ textDecoration: 'none', color:'black' }}
-                    >
-                        <ListItem onClick={this.handleDrawerClose} button className={classes.nested}>
-                          <div style={{float:'left'}}><span
-                              className={`${icon_class}`}
-                              style={{ marginRight: '0.5em', width:'10px', }}
-                              />
-                            </div>
-                          <ListItemText inset primary={source.Caption} className={classes.sourceNameText} />
-                      </ListItem>
-                      </Link>
-                // })
-              })}
-            </List>
-          </Collapse>
-          <Divider />
-          <Link to={`/manage/`} style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerClose} button key="Manage" selected={this.props.history.location.pathname.startsWith(`/manage/`)}>
-              <ListItemIcon><SettingsIcon /></ListItemIcon>
-              <ListItemText primary="Manage" style={{color:'black'}} />
-            </ListItem>
-          </Link>
-      </List>
-    </div>);
+      </Link>
+        <Link to={`/appStore/`} style={{ textDecoration: 'none' }}>
+          <ListItem onClick={handleDrawerClose} button key="AppStore" selected={props.history.location.pathname.startsWith(`/appStore/`)}>
+            <ListItemIcon><AppsIcon /></ListItemIcon>
+            <ListItemText primary="App Store" style={{color:'black'}} />
+          </ListItem>
+        </Link>
+      <Divider />
+      { firstSearchLink() ? (<Link to={`${firstSearchLink()}`} style={{ textDecoration: 'none' }}>
+          <ListItem onClick={handleDrawerClose} button key="Search" selected={props.history.location.pathname.startsWith(`/search/`)}>
+            <ListItemIcon><SearchIcon /></ListItemIcon>
+            <ListItemText primary="Search" style={{color:'black'}} />
+          </ListItem>
+        </Link>) : (<Link to={`${firstSearchLink()}`}  className="disabledCursor" onClick={ (event) => event.preventDefault()} style={{ textDecoration: 'none' }}>
+          <ListItem  button key="Search" selected={props.history.location.pathname.startsWith(`/search/`)}>
+            <ListItemIcon>
+              <SearchIcon />
+            </ListItemIcon>
+            <Tooltip title="You don't have any mounted storage with indices. Please either create indices to search or mount storages that you have already indexed.">
+              <ListItemText primary="Search" style={{color:'black'}} />
+            </Tooltip>
+          </ListItem>
+        </Link>)
+      }
+      <ListItem button key="Browse" selected={props.history.location.pathname.startsWith(`/browse/`)} onClick={handleBrowserClick}>
+          <ListItemIcon><BrowserIcon /></ListItemIcon>
+          <ListItemText primary="Cloud Drive" style={{color:'black'}} />
+          {browserListOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={browserListOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+            {sources.filter(s => s.Status == "mounted").map(source => {
+              let icon_class = "fas fa-database"
+              if (source.IsRemovable)
+                icon_class = "fab fa-usb"
+              // else if (source.source_type == "internal")
+              //   icon_class = "fab fa-hdd"
+              // return source.drive_partitions.filter(p => p.status == "mounted").map(partition => {
+                  return <Link
+                  to={`/browse/sources/${source.Type}/${source.ID}/`}
+                  style={{ textDecoration: 'none', color:'black' }}
+                  >
+                      <ListItem onClick={handleDrawerClose} button className={classes.nested}>
+                        <div style={{float:'left'}}><span
+                            className={`${icon_class}`}
+                            style={{ marginRight: '0.5em', width:'10px', }}
+                            />
+                          </div>
+                        <ListItemText inset primary={source.Caption} className={classes.sourceNameText} />
+                    </ListItem>
+                    </Link>
+              // })
+            })}
+          </List>
+        </Collapse>
+        <Divider />
+        <Link to={`/manage/`} style={{ textDecoration: 'none' }}>
+          <ListItem onClick={handleDrawerClose} button key="Manage" selected={props.history.location.pathname.startsWith(`/manage/`)}>
+            <ListItemIcon><SettingsIcon /></ListItemIcon>
+            <ListItemText primary="Manage" style={{color:'black'}} />
+          </ListItem>
+        </Link>
+    </List>
+  </div>);
 
-    return (
-    <MuiThemeProvider theme={blackTheme}>
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          className={classNames(classes.appBar, {
-            [classes.appBarShift]: open,
-          })}
-        >
-          <Toolbar className={classes.toolbar}>
-            <Hidden lgUp>
-              <IconButton
-                className={classes.menuButton}
-                color="inherit"
-                aria-label="Open drawer"
-                onClick={this.handleDrawerOpen}
-              >
-                <MenuIcon />
-              </IconButton>
-            </Hidden>
-            <Typography
-              className={classes.title}
-              variant="h6"
+  return (
+    <Root className={classes.root}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+      >
+        <Toolbar className={classes.toolbar}>
+          <Hidden lgUp>
+            <IconButton
+              className={classes.menuButton}
               color="inherit"
-              noWrap
+              aria-label="Open drawer"
+              onClick={handleDrawerOpen}
             >
-              Hurra Cloud
-            </Typography>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Search your files"
-                onKeyPress={this.onSearchBarKeyPress}
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-              />
+              <MenuIcon />
+            </IconButton>
+          </Hidden>
+          <Typography
+            className={classes.title}
+            variant="h6"
+            color="inherit"
+            noWrap
+          >
+            Hurra Cloud
+          </Typography>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
             </div>
-            <div className={classes.grow} />
-            <div className={classes.sectionDesktop}>
+            <InputBase
+              placeholder="Search your files"
+              onKeyPress={onSearchBarKeyPress}
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+            />
+          </div>
+          <div className={classes.grow} />
+          <div className={classes.sectionDesktop}>
 
-              {/* <IconButton color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                  <MailIcon />
-                </Badge>
-              </IconButton>
-              <IconButton color="inherit">
-                <Badge badgeContent={17} color="secondary">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
-              <IconButton
-                aria-owns={isMenuOpen ? 'material-appbar' : undefined}
-                aria-haspopup="true"
-                onClick={this.handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton> */}
-            </div>
-            <div className={classes.sectionMobile}>
-              <IconButton
-                aria-haspopup="true"
-                onClick={this.handleMobileMenuOpen}
-                color="inherit"
-              >
-                <MoreIcon />
-              </IconButton>
-            </div>
-          </Toolbar>
-        </AppBar>
-        {renderMenu}
-        {renderMobileMenu}
-        <Hidden lgUp>
-          <Drawer
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            variant="temporary"
-            anchor="left"
-            open={open}
-            classes={{
-              paper: classes.drawerPaper,
-            }}  
-          >
-            {drawerContent}
-          </Drawer>
-        </Hidden>
-        <Hidden mdDown>
-          <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            anchor="left"
-            open
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-            {drawerContent}
-          </Drawer>
-        </Hidden>
-        <main
-          className={classNames(classes.content, {
-            [classes.contentShift]: open,
-          })}
+            {/* <IconButton color="inherit">
+              <Badge badgeContent={4} color="secondary">
+                <MailIcon />
+              </Badge>
+            </IconButton>
+            <IconButton color="inherit">
+              <Badge badgeContent={17} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              aria-owns={isMenuOpen ? 'material-appbar' : undefined}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton> */}
+          </div>
+          <div className={classes.sectionMobile}>
+            <IconButton
+              aria-haspopup="true"
+              onClick={handleMobileMenuOpen}
+              color="inherit"
+            >
+              <MoreIcon />
+            </IconButton>
+          </div>
+        </Toolbar>
+      </AppBar>
+      {renderMenu}
+      {renderMobileMenu}
+      <Hidden lgUp>
+        <StyledDrawer
+          variant="temporary"
+          anchor="left"
+          open={open}
         >
-          <div className={classes.drawerHeader} />
-          <Route exact={true} path="/" render={() => (<HomePage apps={this.state.apps} sources={this.state.sources} stats={this.state.stats} />)}/>
-          <Route path="/(browse|browse/preview)/sources/:sourceType/:sourceID/:path*" render={({match}) =>
+          {drawerContent}
+        </StyledDrawer>
+      </Hidden>
+      <Hidden mdDown>
+        <StyledDrawer
+          className={classes.drawer}
+          variant="permanent"
+          anchor="left"
+          open
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          {drawerContent}
+        </StyledDrawer>
+      </Hidden>
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: open,
+        })}
+      >
+        <div className={classes.drawerHeader} />
+        <Routes>
+          <Route exact={true} path="/" element={<HomePage apps={apps} sources={sources} stats={stats} />}/> 
+          <Route path="/(browse|browse/preview)/sources/:sourceType/:sourceID/:path/*" render={({match}) =>
                     (<BrowserPage sourceType={match.params.sourceType}
                                   sourceID={match.params.sourceID}
-                                  source={this.state.sources.filter(s => s.Type == match.params.sourceType && s.ID == match.params.sourceID)[0]}
+                                  source={sources.filter(s => s.Type == match.params.sourceType && s.ID == match.params.sourceID)[0]}
                                   path={`sources/${match.params.sourceType}/${match.params.sourceID}/${match.params.path || ""}/`} />)}/>
 
           <Route path="/search/:sourceType/:sourceID/:action?" render={ ({match}) =>
-                    (<SearchPage sources={this.state.sources}
-                                 selectSourceType={match.params.sourceType}
-                                 selectSourceID={match.params.sourceID} />) } />
+                    (<SearchPage sources={sources}
+                                selectSourceType={match.params.sourceType}
+                                selectSourceID={match.params.sourceID} />) } />
 
           <Route path="/search/:sourceType/:sourceID/preview/:path+" render={({match}) => (
             <FilePreview
               open={true}
-              onCloseClick={() => this.props.history.goBack()}
+              onCloseClick={() => props.history.goBack()}
               file={match.params.path}
             />
           )}/>
@@ -657,26 +684,25 @@ class App extends React.Component {
           <Route path="/browse/preview/:path+" render={({match}) => (
             <FilePreview
               open={true}
-              onCloseClick={() => this.props.history.goBack()}
+              onCloseClick={() => props.history.goBack()}
               file={match.params.path}
             />
           )}/>
 
-          <Route path="/manage" render={() => (<SettingsPage sources={this.state.sources} drives={this.state.drives} />)}/>
-          <Route path="/appStore" render={() => (<AppStorePage sources={this.state.sources} />)}/>
+          <Route path="/manage" render={() => (<SettingsPage sources={sources} drives={drives} />)}/>
+          <Route path="/appStore" render={() => (<AppStorePage sources={sources} />)}/>
           <Route path="/apps/:auid+" render={({match}) => (<AppLoader auid={match.params.auid} />)}/>
-        </main>
-      </div>
-  </MuiThemeProvider>
-    );
-  }
+        </Routes>
+      </main>
+    </Root>
+  );
 }
 
-App.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
-  onNewSearch: PropTypes.func,
-  onPartitionClick: PropTypes.func
-};
+// App.propTypes = {
+//   classes: PropTypes.object.isRequired,
+//   onNewSearch: PropTypes.func,
+//   onPartitionClick: PropTypes.func
+// };
 
-export default withRouter(withStyles(styles, { withTheme: true })(App));
+
+export default withRoute(AppWrapper);

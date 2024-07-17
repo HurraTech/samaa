@@ -1,25 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
-import TableCell from '@material-ui/core/TableCell';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import {
-  AutoSizer,
-  Column,
-  SortDirection,
-  Table,
-  InfiniteLoader,
-} from 'react-virtualized';
+import { withStyles } from '@mui/styles';
+import TableCell from '@mui/material/TableCell';
+import TableSortLabel from '@mui/material/TableSortLabel';
+// import {
+//   AutoSizer,
+//   Column,
+//   SortDirection,
+//   Table,
+//   InfiniteLoader,
+// } from 'react-virtualized';
 import Highlighter from 'react-highlight-words';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
 import Moment from 'react-moment';
 import Utils from '../utils';
-import PreviewIcon from '@material-ui/icons/ChromeReaderMode';
-import OpenIcon from '@material-ui/icons/OpenInNew';
-import DownloadIcon from '@material-ui/icons/GetApp';
-import FilterIcon from '@material-ui/icons/FilterList';
+import PreviewIcon from '@mui/icons-material/ChromeReaderMode';
+import OpenIcon from '@mui/icons-material/OpenInNew';
+import DownloadIcon from '@mui/icons-material/GetApp';
+import FilterIcon from '@mui/icons-material/FilterList';
 import { JAWHAR_API  } from '../constants';
 
 const STATUS_LOADING = 1;
@@ -277,54 +277,54 @@ class SearchResultsTable extends React.PureComponent {
     }
   };
 
-  headerRenderer = ({ label, columnIndex, dataKey, sortBy, sortDirection }) => {
-    const { headerHeight, columns, classes, sort } = this.props;
-    const direction = {
-      [SortDirection.ASC]: 'asc',
-      [SortDirection.DESC]: 'desc',
-    };
+  // headerRenderer = ({ label, columnIndex, dataKey, sortBy, sortDirection }) => {
+  //   const { headerHeight, columns, classes, sort } = this.props;
+  //   const direction = {
+  //     [SortDirection.ASC]: 'asc',
+  //     [SortDirection.DESC]: 'desc',
+  //   };
 
-    const filterIcon =
-      columnIndex == 0 ? (
-        <IconButton>
-          <div className={classes.filterIcon}>
-            <Tooltip title="Filter Results">
-              <FilterIcon />
-            </Tooltip>
-          </div>
-        </IconButton>
-      ) : (
-        ''
-      );
+  //   const filterIcon =
+  //     columnIndex == 0 ? (
+  //       <IconButton>
+  //         <div className={classes.filterIcon}>
+  //           <Tooltip title="Filter Results">
+  //             <FilterIcon />
+  //           </Tooltip>
+  //         </div>
+  //       </IconButton>
+  //     ) : (
+  //       ''
+  //     );
 
-    const inner =
-      !columns[columnIndex].disableSort && sort != null ? (
-        <TableSortLabel
-          active={dataKey === sortBy}
-          direction={direction[sortDirection]}
-        >
-          {[filterIcon, label]}
-        </TableSortLabel>
-      ) : (
-        [filterIcon, label]
-      );
+  //   const inner =
+  //     !columns[columnIndex].disableSort && sort != null ? (
+  //       <TableSortLabel
+  //         active={dataKey === sortBy}
+  //         direction={direction[sortDirection]}
+  //       >
+  //         {[filterIcon, label]}
+  //       </TableSortLabel>
+  //     ) : (
+  //       [filterIcon, label]
+  //     );
 
-    return (
-      <TableCell
-        component="div"
-        className={classNames(
-          classes.tableHeader,
-          classes.flexContainer,
-          classes.noClick,
-        )}
-        variant="head"
-        style={{ height: headerHeight }}
-        align={columns[columnIndex].numeric || false ? 'right' : 'left'}
-      >
-        {inner}
-      </TableCell>
-    );
-  };
+  //   return (
+  //     <TableCell
+  //       component="div"
+  //       className={classNames(
+  //         classes.tableHeader,
+  //         classes.flexContainer,
+  //         classes.noClick,
+  //       )}
+  //       variant="head"
+  //       style={{ height: headerHeight }}
+  //       align={columns[columnIndex].numeric || false ? 'right' : 'left'}
+  //     >
+  //       {inner}
+  //     </TableCell>
+  //   );
+  // };
 
   _isRowLoaded({ index }) {
     const { loadedRowsMap } = this.state;
@@ -403,68 +403,65 @@ class SearchResultsTable extends React.PureComponent {
 
   render() {
     const { classes, columns, rowCount, ...tableProps } = this.props;
-    return (
-      <InfiniteLoader
-        isRowLoaded={this._isRowLoaded}
-        loadMoreRows={this._loadMoreRows}
-        rowCount={rowCount}
-        ref={child => {
-          this._infiniteLoader = child;
-        }}
-      >
-        {({ onRowsRendered, registerChild }) => (
-          <AutoSizer>
-            {({ height, width }) => (
-              <Table
-                className={classes.table}
-                height={height}
-                width={width}
-                rowCount={rowCount}
-                ref={child => {
-                  this._table = child;
-                  registerChild(child);
-                }}
-                onRowsRendered={onRowsRendered}
-                {...tableProps}
-                rowClassName={this.getRowClassName}
-              >
-                {columns.map(
-                  (
-                    {
-                      cellContentRenderer = null,
-                      className,
-                      dataKey,
-                      content,
-                      ...other
-                    },
-                    index,
-                  ) => {
-                    const renderer = this.cellRenderer(content);
-                    return (
-                      <Column
-                        key={dataKey}
-                        headerRenderer={headerProps =>
-                          this.headerRenderer({
-                            ...headerProps,
-                            columnIndex: index,
-                          })
-                        }
-                        className={classNames(classes.flexContainer, className)}
-                        cellRenderer={renderer}
-                        dataKey={dataKey}
-                        {...other}
-                      />
-                    );
-                  },
-                )}
-              </Table>
-            )}
-          </AutoSizer>
-        )}
-      </InfiniteLoader>
-      //     </div>
-      // </div>);
-    );
+    return (<div></div>);
+      // <InfiniteLoader
+      //   isRowLoaded={this._isRowLoaded}
+      //   loadMoreRows={this._loadMoreRows}
+      //   rowCount={rowCount}
+      //   ref={child => {
+      //     this._infiniteLoader = child;
+      //   }}
+      // >
+      //   {({ onRowsRendered, registerChild }) => (
+      //     <AutoSizer>
+      //       {({ height, width }) => (
+      //         <Table
+      //           className={classes.table}
+      //           height={height}
+      //           width={width}
+      //           rowCount={rowCount}
+      //           ref={child => {
+      //             this._table = child;
+      //             registerChild(child);
+      //           }}
+      //           onRowsRendered={onRowsRendered}
+      //           {...tableProps}
+      //           rowClassName={this.getRowClassName}
+      //         >
+      //           {columns.map(
+      //             (
+      //               {
+      //                 cellContentRenderer = null,
+      //                 className,
+      //                 dataKey,
+      //                 content,
+      //                 ...other
+      //               },
+      //               index,
+      //             ) => {
+      //               const renderer = this.cellRenderer(content);
+      //               return (
+      //                 <Column
+      //                   key={dataKey}
+      //                   headerRenderer={headerProps =>
+      //                     this.headerRenderer({
+      //                       ...headerProps,
+      //                       columnIndex: index,
+      //                     })
+      //                   }
+      //                   className={classNames(classes.flexContainer, className)}
+      //                   cellRenderer={renderer}
+      //                   dataKey={dataKey}
+      //                   {...other}
+      //                 />
+      //               );
+      //             },
+      //           )}
+      //         </Table>
+      //       )}
+      //     </AutoSizer>
+      //   )}
+      // </InfiniteLoader>
   }
 }
 

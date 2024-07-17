@@ -1,47 +1,47 @@
 import React from 'react';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 import axios from 'axios';
-import CloudIcon from '@material-ui/icons/Cloud';
-import Fab from '@material-ui/core/Fab';
-import Grid from '@material-ui/core/Grid';
+import CloudIcon from '@mui/icons-material/Cloud';
+import Fab from '@mui/material/Fab';
+import Grid from '@mui/material/Grid';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import { Typography, DialogContent, DialogActions, DialogContentText } from '@material-ui/core';
+import { withStyles } from '@mui/styles';
+import { Typography, DialogContent, DialogActions, DialogContentText } from '@mui/material';
 import classNames from 'classnames';
 import $ from 'jquery'
 import Utils from '../utils'
-import Button from '@material-ui/core/Button';
-import MountIcon from '@material-ui/icons/PlayForWork'
-import UnmountIcon from '@material-ui/icons/EjectRounded'
-import DisconnectIcon from '@material-ui/icons/LinkOff'
-import ReconnectIcon from '@material-ui/icons/Link'
-import IndexIcon from '@material-ui/icons/DescriptionOutlined'
-import Tooltip from '@material-ui/core/Tooltip';
+import Button from '@mui/material/Button';
+import MountIcon from '@mui/icons-material/PlayForWork'
+import UnmountIcon from '@mui/icons-material/EjectRounded'
+import DisconnectIcon from '@mui/icons-material/LinkOff'
+import ReconnectIcon from '@mui/icons-material/Link'
+import IndexIcon from '@mui/icons-material/DescriptionOutlined'
+import Tooltip from '@mui/material/Tooltip';
 import IndexDialog from './IndexDialog';
 import AlertDialog from '../components/AlertDialog'
-import PauseIcon from '@material-ui/icons/Pause'
-import ResumeIcon from '@material-ui/icons/PlayArrowRounded'
-import DeleteIcon from '@material-ui/icons/DeleteRounded'
-import FileCopy from '@material-ui/icons/FileCopy'
+import PauseIcon from '@mui/icons-material/Pause'
+import ResumeIcon from '@mui/icons-material/PlayArrowRounded'
+import DeleteIcon from '@mui/icons-material/DeleteRounded'
+import FileCopy from '@mui/icons-material/FileCopy'
 
-import BuildIcon from '@material-ui/icons/BuildRounded'
-import CancelIcon from '@material-ui/icons/CancelPresentation'
-import CircularProgress from '@material-ui/core/CircularProgress';
+import BuildIcon from '@mui/icons-material/BuildRounded'
+import CancelIcon from '@mui/icons-material/CancelPresentation'
+import CircularProgress from '@mui/material/CircularProgress';
 import NewWindow from 'react-new-window'
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import TextField from '@material-ui/core/TextField';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+import ListItemText from '@mui/material/ListItemText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from '@mui/material/Dialog';
+import TextField from '@mui/material/TextField';
 import { JAWHAR_API } from '../constants';
 
 const styles = theme => ({

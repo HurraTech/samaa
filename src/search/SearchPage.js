@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Paper from '@material-ui/core/Paper';
-import { withStyles } from '@material-ui/core/styles';
-import { withRouter } from 'react-router-dom'
+import Paper from '@mui/material/Paper';
+import { withStyles } from '@mui/styles';
 import axios from 'axios';
 import QuickPreview from '../components/QuickPreview';
 import FilePreview from '../components/FilePreview';
@@ -10,8 +9,9 @@ import SearchResultsTable from './SearchResultsTable';
 import ProgressIndicator from '../components/ProgressIndicator';
 import QueryString from 'query-string';
 import { JAWHAR_API  } from '../constants';
-import {FormControl, InputLabel, Input, FormHelperText} from '@material-ui/core';
-import { Typography, Select, MenuItem, List, ListItem } from '@material-ui/core'
+import {FormControl, InputLabel, Input, FormHelperText} from '@mui/material';
+import { Typography, Select, MenuItem, List, ListItem } from '@mui/material'
+import withRoute from "../withRoute";
 
 const SIZE = 30;
 
@@ -360,4 +360,4 @@ const deepDiffMapper = (function() {
   };
 })();
 
-export default withRouter(withStyles(styles)(Content));
+export default withRoute(withStyles(styles)(Content));

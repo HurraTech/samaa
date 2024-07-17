@@ -14,7 +14,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import HomeIcon from '@mui/icons-material/Home'
 import MoreIcon from '@mui/icons-material/MoreVert';
-import classNames from 'classnames';
 import axios from 'axios';
 import Collapse from '@mui/material/Collapse';
 import Drawer from '@mui/material/Drawer';
@@ -57,11 +56,6 @@ import FilePreview from './components/FilePreview';
 import Tooltip from '@mui/material/Tooltip';
 import withRoute from "./withRoute";
 
-const jss = create({
-  ...jssPreset(),
-  insertionPoint: 'jss-insertion-point',
-});
-
 const generateClassName = createGenerateClassName();
 
 const drawerWidth = 240;
@@ -92,7 +86,7 @@ const classes = {
 }
   
 const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.root}`]: {
+  [`&.${classes.root}`]: {
     width: '100%',
     display: 'flex',
   },
@@ -138,16 +132,16 @@ const Root = styled('div')(({ theme }) => ({
     '&:hover': {
       backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
-    marginRight: theme.spacing.unit * 2,
+    marginRight: theme.spacing(2),
     marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing.unit * 3,
+      marginLeft: theme.spacing(3),
       width: 'auto',
     },
   },
   [`& .${classes.searchIcon}`]: {
-    width: theme.spacing.unit * 9,
+    width: theme.spacing(9),
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -162,9 +156,9 @@ const Root = styled('div')(({ theme }) => ({
   },
   [`& .${classes.inputInput}`]: {
     paddingTop: theme.spacing.unit,
-    paddingRight: theme.spacing.unit * 4,
+    paddingRight: theme.spacing(4),
     paddingBottom: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 10,
+    paddingLeft: theme.spacing(10),
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
@@ -228,9 +222,9 @@ const Root = styled('div')(({ theme }) => ({
   },
   [`& .${classes.content}`]: {
     flexGrow: 1,
-    paddingLeft: theme.spacing.unit * 3,
-    paddingRight: theme.spacing.unit * 3,
-    paddingTop: theme.spacing.unit * 3,
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+    paddingTop: theme.spacing(3),
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -246,7 +240,7 @@ const Root = styled('div')(({ theme }) => ({
   },
 
   [`& .${classes.nested}`]: {
-    paddingLeft: theme.spacing.unit * 4,
+    paddingLeft: theme.spacing(4),
     maxWidth: `${drawerWidth}px`,
     overflow: 'hidden',
     whiteSpace: 'nowrap',
@@ -347,7 +341,6 @@ const App = (props) => {
        .get(`${JAWHAR_API}/system/stats`)
        .then(res => {
            const response = res.data;
-           console.log("STATS!!!", response)
            setStats(response)
            setPendingStatsRequest(false)
        });
@@ -475,16 +468,16 @@ const App = (props) => {
   const drawerContent = (          
     <div>
       <div className={classes.drawerHeader}>
-      <div className={classes.hurraLogo} />
-      <Hidden lgUp>
-        <IconButton onClick={handleDrawerClose}>
-          {theme.direction === 'ltr' ? (
-            <ChevronLeftIcon />
-          ) : (
-            <ChevronRightIcon />
-          )}
-        </IconButton>
-      </Hidden>
+        <div className={classes.hurraLogo} />
+        <Hidden lgUp>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'ltr' ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
+          </IconButton>
+        </Hidden>
     </div>
 
     <Divider />
@@ -664,14 +657,13 @@ const App = (props) => {
         </Drawer>
       </Hidden>
       <main
-        className={classNames(classes.content, {
+        className={clsx(classes.content, {
           [classes.contentShift]: open,
         })}
       >
         <div className={classes.drawerHeader} />
         <Routes>
-          <Route exact={true} path="/" element={<div></div>}/> 
-            {/* <HomePage apps={apps} sources={sources} stats={stats} /> */}
+          <Route exact={true} path="/" element={<HomePage apps={apps} sources={sources} stats={stats} />}/> 
           <Route path="/(browse|browse/preview)/sources/:sourceType/:sourceID/:path/*" render={({match}) =>
                     (<BrowserPage sourceType={match.params.sourceType}
                                   sourceID={match.params.sourceID}

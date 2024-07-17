@@ -18,7 +18,11 @@ import Utils from '../utils';
 import axios from '../axios';
 import {Pie, Bar} from 'react-chartjs-2';
 import { JAWHAR_API  } from '../constants';
-
+import {Chart, ArcElement, BarElement, CategoryScale, LinearScale} from 'chart.js'
+Chart.register(ArcElement);
+Chart.register(BarElement);
+Chart.register(CategoryScale);
+Chart.register(LinearScale);
 
 const PREFIX = 'HomePage';
 
@@ -325,7 +329,6 @@ class HomePage extends React.Component {
     };
 
     componentDidMount = () => {
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!! osurces", this.props.sources)
          if (this.state.selectedChartSource == null && this.props.sources.length > 0) {
              this.setState({selectedChartSource: this.props.sources[0].ID})
 		 }
@@ -443,8 +446,14 @@ class HomePage extends React.Component {
                       <CardContent>
                         <Grid container spacing={2}>
 				         	<Grid item xs={12}>
-                               <Typography variant="h4" className={classes.dashboardHeading}>Storage Usage</Typography><br/>
-				               {/* <Pie data={this.state.capacityChartData} width="180" height="180"   options={{ maintainAspectRatio: false }} /> */}
+                               <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                         <Typography variant="h4" className={classes.dashboardHeading}>Storage Usage</Typography><br/>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                         <Pie data={this.state.capacityChartData} width="240" height="240" options={{ maintainAspectRatio: false, animation: { animateRotate: false} }} />
+                                    </Grid>
+                                </Grid>
 				         	</Grid>
 				         	<Grid item xs={12} className={classes.selectDeviceGridItem}>
 							  <Select value={this.state.selectedChartSource}  onChange={(event) => this.changeChartStorage(event.target.value) }>
@@ -464,8 +473,14 @@ class HomePage extends React.Component {
                       <CardContent>
                         <Grid container spacing={2}>
 				         	<Grid item xs={12}>
-                               <Typography variant="h4" className={classes.dashboardHeading}>Index Storage Usage</Typography><br/>
-				               {/* <Bar data={this.state.indexChartData} width="120" height="180"   options={{ maintainAspectRatio: false, indexAxis: 'y' }} /> */}
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <Typography variant="h4" className={classes.dashboardHeading}>Index Storage Usage</Typography><br/>
+                                    </Grid>
+                                    <Grid item xs={12}>
+    	    			               <Bar data={this.state.indexChartData} width="120" height="180"   options={{ maintainAspectRatio: false, indexAxis: 'y' }} />
+                                   </Grid>
+                                </Grid>
 				         	</Grid>
 				     	</Grid>
 				        <Grid item xs={12} className={classes.selectDeviceGridItem}>

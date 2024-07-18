@@ -1,4 +1,5 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -10,7 +11,6 @@ import CloudIcon from '@mui/icons-material/Cloud';
 import Fab from '@mui/material/Fab';
 import Grid from '@mui/material/Grid';
 import PropTypes from 'prop-types';
-import { withStyles } from '@mui/styles';
 import { Typography, DialogContent, DialogActions, DialogContentText } from '@mui/material';
 import classNames from 'classnames';
 import $ from 'jquery'
@@ -44,30 +44,64 @@ import Dialog from '@mui/material/Dialog';
 import TextField from '@mui/material/TextField';
 import { JAWHAR_API } from '../constants';
 
-const styles = theme => ({
-    root: {
+const PREFIX = 'SettingsPage';
+
+const classes = {
+    root: `${PREFIX}-root`,
+    tableDescriptionWrapper: `${PREFIX}-tableDescriptionWrapper`,
+    descriptionTitle: `${PREFIX}-descriptionTitle`,
+    descriptionContent: `${PREFIX}-descriptionContent`,
+    fabWrapper: `${PREFIX}-fabWrapper`,
+    createButton: `${PREFIX}-createButton`,
+    leftIcon: `${PREFIX}-leftIcon`,
+    rightIcon: `${PREFIX}-rightIcon`,
+    iconSmall: `${PREFIX}-iconSmall`,
+    tableButton: `${PREFIX}-tableButton`,
+    sourceRow: `${PREFIX}-sourceRow`,
+    driveRow: `${PREFIX}-driveRow`,
+    tableHeader: `${PREFIX}-tableHeader`,
+    bodyCell: `${PREFIX}-bodyCell`,
+    iconCell: `${PREFIX}-iconCell`,
+    nameCell: `${PREFIX}-nameCell`,
+    capacityCell: `${PREFIX}-capacityCell`,
+    availableCell: `${PREFIX}-availableCell`,
+    actionsCell: `${PREFIX}-actionsCell`,
+    headerCell: `${PREFIX}-headerCell`,
+    indexCell: `${PREFIX}-indexCell`,
+    toolsCell: `${PREFIX}-toolsCell`,
+    indexTools: `${PREFIX}-indexTools`,
+    progress: `${PREFIX}-progress`,
+    dialogContent: `${PREFIX}-dialogContent`
+};
+
+const Root = styled('div')((
+    {
+        theme
+    }
+) => ({
+    [`& .${classes.root}`]: {
         width: '100%',
         marginTop: theme.spacing.unit * 3,
         overflowX: 'auto',
     },
 
-    tableDescriptionWrapper: {
+    [`& .${classes.tableDescriptionWrapper}`]: {
         padding: "15px",
         fontSize: '11pt',
         backgroundColor: 'white',
     },
 
-    descriptionTitle: {
+    [`& .${classes.descriptionTitle}`]: {
         fontSize: '13pt',
     },
 
-    descriptionContent: {
+    [`& .${classes.descriptionContent}`]: {
         paddingRight: '15px',
         lineHeight: '22px',
         fontFamily: 'Tahoma'
     },
 
-    fabWrapper: {
+    [`& .${classes.fabWrapper}`]: {
         padding: 'relative',
         float: 'right',
         marginTop: '-25px',
@@ -75,38 +109,37 @@ const styles = theme => ({
         zIndex: 999
     },
 
-    createButton: {
+    [`& .${classes.createButton}`]: {
         position: 'absolute',
         zIndex: 999,
         marginRight: '-10px'
     },
 
-    leftIcon: {
+    [`& .${classes.leftIcon}`]: {
         marginRight: theme.spacing.unit,
     },
 
-    rightIcon: {
+    [`& .${classes.rightIcon}`]: {
         marginLeft: theme.spacing.unit,
     },
 
-    iconSmall: {
+    [`& .${classes.iconSmall}`]: {
         fontSize: 20,
     },
 
-    tableButton: {
+    [`& .${classes.tableButton}`]: {
         margin: theme.spacing.unit,
     },
 
-    sourceRow: {
+    [`& .${classes.sourceRow}`]: {
         backgroundColor: 'white',
     },
 
-
-    driveRow: {
+    [`& .${classes.driveRow}`]: {
         backgroundColor: '#ededed',
     },
 
-    tableHeader: {
+    [`& .${classes.tableHeader}`]: {
         backgroundColor: theme.palette.grey[900],
         color: 'white',
         height: '32px',
@@ -114,67 +147,67 @@ const styles = theme => ({
         padding :0,
     },
 
-    bodyCell: {
+    [`& .${classes.bodyCell}`]: {
         padding: 10
     },
 
-    iconCell: {
+    [`& .${classes.iconCell}`]: {
         maxWidth: '35px',
         padding: '0px',
         paddingLeft: '15px',
         paddingRight: '15px'
     },
 
-    nameCell: {
+    [`& .${classes.nameCell}`]: {
         padding: '0px',
         width: '250px'
     },
 
-    capacityCell: {
+    [`& .${classes.capacityCell}`]: {
         width: '100px'
     },
 
-    availableCell: {
+    [`& .${classes.availableCell}`]: {
         width: '100px'
     },
 
-    actionsCell: {
+    [`& .${classes.actionsCell}`]: {
         minWidth:'300px'
     },
 
-    headerCell: {
+    [`& .${classes.headerCell}`]: {
 
     },
 
-    indexCell: {
+    [`& .${classes.indexCell}`]: {
         width: '350px',
         padding: '0px',
     },
 
-    toolsCell: {
+    [`& .${classes.toolsCell}`]: {
         width:'30px'
     },
 
-    indexTools: {
+    [`& .${classes.indexTools}`]: {
         float: 'right',
         clear: 'both'
     },
 
-    progress: {
+    [`& .${classes.progress}`]: {
         marginTop: theme.spacing.unit,
         marginLeft: theme.spacing.unit * 5,
         padding:'2px'
       },
 
-      dialogContent: {
-          padding:0,
-          lineHeight: "25px",
-          fontFamily: "'Courier New', Courier, monospace",
-          marginTop: "-12px",
-          fontSize: "14px",
-      }
+    [`& .${classes.dialogContent}`]: {
+        padding:0,
+        lineHeight: "25px",
+        fontFamily: "'Courier New', Courier, monospace",
+        marginTop: "-12px",
+        fontSize: "14px",
+    }
+}));
 
-});
 class SettingsPage extends React.Component {
 
     constructor(props, context) {
@@ -426,10 +459,10 @@ class SettingsPage extends React.Component {
 
     /* ---------- Render --------- */
     render() {
-        const { classes } = this.props;
+        const { } = this.props;
         const {  indexDialogOpen, selectedSource } = this.state
         return (
-            <div>
+            <Root>
                 {this.state.googleAuthConsentOpen && this.currentAuthWindow}
 
                 <IndexDialog
@@ -807,8 +840,8 @@ class SettingsPage extends React.Component {
                       Connect External Cloud Drive
                    </Button>
                 </div>
-            </div>
-            );
+            </Root>
+        );
     }
 
 }
@@ -817,4 +850,4 @@ SettingsPage.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SettingsPage);
+export default (SettingsPage);

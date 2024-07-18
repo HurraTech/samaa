@@ -1,7 +1,7 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import Paper from '@mui/material/Paper';
-import { withStyles } from '@mui/styles';
 import Alert  from '@mui/lab/Alert';
 import axios from 'axios';
 import FilePreview from '../components/FilePreview';
@@ -14,36 +14,60 @@ import Typography from '@mui/material/Typography';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} from '@mui/material'
 import withRoute from "../withRoute";
 
-const styles = theme => ({
-  paper: {
+const PREFIX = 'BrowserPage';
+
+const classes = {
+  paper: `${PREFIX}-paper`,
+  searchBar: `${PREFIX}-searchBar`,
+  error: `${PREFIX}-error`,
+  searchInput: `${PREFIX}-searchInput`,
+  block: `${PREFIX}-block`,
+  addUser: `${PREFIX}-addUser`,
+  contentWrapper: `${PREFIX}-contentWrapper`,
+  progressWrapper: `${PREFIX}-progressWrapper`
+};
+
+const Root = styled('span')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.paper}`]: {
     maxWidth: '100%',
     margin: 'auto',
     overflow: 'hidden',
     height: "82vh",
   },
-  searchBar: {
+
+  [`& .${classes.searchBar}`]: {
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
   },
-  error: {
+
+  [`& .${classes.error}`]: {
     marginBottom: "5px",
   },
-  searchInput: {
+
+  [`& .${classes.searchInput}`]: {
     fontSize: theme.typography.fontSize,
   },
-  block: {
+
+  [`& .${classes.block}`]: {
     display: 'block',
   },
-  addUser: {
+
+  [`& .${classes.addUser}`]: {
     marginRight: theme.spacing.unit,
   },
-  contentWrapper: {
+
+  [`& .${classes.contentWrapper}`]: {
     margin: '0px 0px',
     height: "100%",
   },
-  progressWrapper: {
+
+  [`& .${classes.progressWrapper}`]: {
     bottom: 0,
   }
-});
+}));
 
 class BrowserPage extends React.Component {
   constructor(props) {
@@ -251,102 +275,104 @@ class BrowserPage extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { } = this.props;
     const { items } = this.state;
-    return (<span>
-        {this.state.error != "" &&
-          <Alert severity="error" className={classes.error}> <div dangerouslySetInnerHTML={{__html: this.state.error}} /></Alert>}
+    return (
+      <Root>
+          {this.state.error != "" &&
+            <Alert severity="error" className={classes.error}> <div dangerouslySetInnerHTML={{__html: this.state.error}} /></Alert>}
 
-      <Dialog
-        open={this.state.deleteConfirmDialog}
-        onClose={this.cancelDelete.bind(this)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        {this.state.deleteConfirmDialog && (<>
-        <DialogTitle id="alert-dialog-title">{"Delete File(s)?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-              Are you sure you want to delete <b>{this.state.selectedItem.Path.replace(/^.*[\\\/]/, '')}</b>? This cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.cancelDelete.bind(this)} color="primary" autoFocus>
-            Cancel
-          </Button>
-          <Button onClick={this.confirmDelete.bind(this)} color="primary">
-            Yes
-          </Button>
-        </DialogActions></>)
-        }
-      </Dialog>
+        <Dialog
+          open={this.state.deleteConfirmDialog}
+          onClose={this.cancelDelete.bind(this)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          {this.state.deleteConfirmDialog && (<>
+          <DialogTitle id="alert-dialog-title">{"Delete File(s)?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+                Are you sure you want to delete <b>{this.state.selectedItem.Path.replace(/^.*[\\\/]/, '')}</b>? This cannot be undone.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.cancelDelete.bind(this)} color="primary" autoFocus>
+              Cancel
+            </Button>
+            <Button onClick={this.confirmDelete.bind(this)} color="primary">
+              Yes
+            </Button>
+          </DialogActions></>)
+          }
+        </Dialog>
 
 
-      <Paper className={classes.paper}>
-        <div className={classes.contentWrapper}>
-        <Dropzone onDrop={acceptedFiles => this.uploadFiles(acceptedFiles)}>
-          {({getRootProps, getInputProps, isDragActive}) => (
-              <div {...getRootProps()} style={{height: "100%"}}>
-                {/* <input {...getInputProps()} /> */}
-                <Backdrop open={isDragActive} style={{zIndex: 1000}}>
-                  <Typography variant="h4" component="h2" style={{color:"white"}}>
-                    Drop Here to Upload Files
-                  </Typography>
-                  </Backdrop>
-                <BrowserTable
-                        rowCount={this.state.items.length}
-                        rowGetter={({ index }) => ({ file: items[index] })}
-                        onPreviewClick={this.handlePreviewClick}
-                        onFilenameClick={this.handleFilenameClick}
-                        classes={classes.table}
-                        searchTerms={this.state.searchTerms}
-                        onDeleteClick={this.handleDeleteClick}
-                        columns={[
-                          {
-                            width: 200,
-                            flexGrow: 1.0,
-                            label: 'File',
-                            dataKey: 'file',
-                            content: 'filename',
-                          },
-                          {
-                            width: 100,
-                            label: 'Size',
-                            dataKey: 'file',
-                            content: 'size',
-                            numeric: true,
-                          },
-                          {
-                            width: 150,
-                            label: 'Created',
-                            dataKey: 'file',
-                            content: 'created',
-                            numeric: true,
-                          },
-                          {
-                            width: 40,
-                            label: '',
-                            dataKey: 'file',
-                            content: 'downloadButton',
-                          },
-                          {
-                            width: 40,
-                            label: '',
-                            dataKey: 'file',
-                            content: 'deleteButton',
-                          },
+        <Paper className={classes.paper}>
+          <div className={classes.contentWrapper}>
+          <Dropzone onDrop={acceptedFiles => this.uploadFiles(acceptedFiles)}>
+            {({getRootProps, getInputProps, isDragActive}) => (
+                <div {...getRootProps()} style={{height: "100%"}}>
+                  {/* <input {...getInputProps()} /> */}
+                  <Backdrop open={isDragActive} style={{zIndex: 1000}}>
+                    <Typography variant="h4" component="h2" style={{color:"white"}}>
+                      Drop Here to Upload Files
+                    </Typography>
+                    </Backdrop>
+                  <BrowserTable
+                          rowCount={this.state.items.length}
+                          rowGetter={({ index }) => ({ file: items[index] })}
+                          onPreviewClick={this.handlePreviewClick}
+                          onFilenameClick={this.handleFilenameClick}
+                          classes={classes.table}
+                          data={items}
+                          searchTerms={this.state.searchTerms}
+                          onDeleteClick={this.handleDeleteClick}
+                          columns={[
+                            {
+                              width: 200,
+                              flexGrow: 1.0,
+                              label: 'File',
+                              dataKey: 'file',
+                              content: 'filename',
+                            },
+                            {
+                              width: 100,
+                              label: 'Size',
+                              dataKey: 'file',
+                              content: 'size',
+                              numeric: true,
+                            },
+                            {
+                              width: 150,
+                              label: 'Created',
+                              dataKey: 'file',
+                              content: 'created',
+                              numeric: true,
+                            },
+                            {
+                              width: 40,
+                              label: '',
+                              dataKey: 'file',
+                              content: 'downloadButton',
+                            },
+                            {
+                              width: 40,
+                              label: '',
+                              dataKey: 'file',
+                              content: 'deleteButton',
+                            },
 
-                        ]}
-                      />
-              </div>
-          )}
-        </Dropzone>
-        </div>
-      </Paper>
-      <div class={classes.progressWrapper}>{this.state.isAjaxInProgress && <ProgressIndicator />}</div>
-      <br/>
-      <Alert severity="info">Drag and Drop Files Above to Upload Files</Alert>
-      </span>
+                          ]}
+                        />
+                </div>
+            )}
+          </Dropzone>
+          </div>
+        </Paper>
+        <div class={classes.progressWrapper}>{this.state.isAjaxInProgress && <ProgressIndicator />}</div>
+        <br/>
+        <Alert severity="info">Drag and Drop Files Above to Upload Files</Alert>
+        </Root>
     );
   }
 }
@@ -356,4 +382,4 @@ BrowserPage.propTypes = {
 };
 
 
-export default withRoute(withStyles(styles)(BrowserPage));
+export default withRoute((BrowserPage));

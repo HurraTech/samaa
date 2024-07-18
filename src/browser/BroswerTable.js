@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import { withStyles, withTheme } from '@mui/styles';
 import TableCell from '@mui/material/TableCell';
 import TableSortLabel from '@mui/material/TableSortLabel';
+import { TableVirtuoso } from 'react-virtuoso'
+
 // import {
 //   AutoSizer,
 //   Column,
@@ -31,7 +33,6 @@ const styles = theme => ({
   flexContainer: {
     display: 'flex',
     alignItems: 'center',
-    // boxSizing: 'border-box',
   },
   tableRow: {
     cursor: 'pointer',
@@ -90,6 +91,8 @@ class BrowserTable extends React.PureComponent {
     this._isRowLoaded = this._isRowLoaded.bind(this);
     this._loadMoreRows = this._loadMoreRows.bind(this);
     this._rowRenderer = this._rowRenderer.bind(this);
+
+    console.log(props.data)
   }
   componentWillReceiveProps = nextProps => {
     if (this.props.query != nextProps.query) {
@@ -116,14 +119,15 @@ class BrowserTable extends React.PureComponent {
     });
   };
 
-  cellRenderer = cellType => ({
+  cellRenderer = cellType => (
     cellData,
     columnIndex = null,
     rowIndex,
     row,
-  }) => {
+  ) => {
     const { columns, classes, rowHeight, onRowClick, onDeleteClick, theme } = this.props;
     const { primary, secondary } = theme.palette.text;
+    console.log(cellType, cellData)
     if (!cellData) {
       return (
         <TableCell
@@ -421,8 +425,52 @@ class BrowserTable extends React.PureComponent {
   }
 
   render() {
-    const { classes, columns, rowCount, ...tableProps } = this.props;
-    return (<div></div>);
+    const { classes, data, columns, rowCount, ...tableProps } = this.props;
+    return (<TableVirtuoso
+      style={{ height: 400 }}
+      data={data}
+      fixedHeaderContent={() => (
+        <tr>
+          <th style={{ width: 150, background: 'white' }}>Name</th>
+          <th style={{ background: 'white' }}>Description</th>
+        </tr>
+      )}
+      itemContent={(index, file) => (
+        <>
+          {columns.map(
+            (
+              {
+                cellContentRenderer = null,
+                className,
+                dataKey,
+                content,
+                ...other
+              },
+              index,
+            ) => {
+              const renderer = this.cellRenderer(content);
+              console.log(file)
+              return (<td>{renderer(file, file, file)}</td>)
+              //   <Column
+              //     key={dataKey}
+              //     headerRenderer={headerProps =>
+              //       this.headerRenderer({
+              //         ...headerProps,
+              //         columnIndex: index,
+              //       })
+              //     }
+              //     className={className(classes.flexContainer, className)}
+              //     cellRenderer={renderer}
+              //     dataKey={dataKey}
+              //     {...other}
+              //   />
+              // );
+            },
+          )}
+
+        </>
+      )}
+    />)
       // <InfiniteLoader
       //   isRowLoaded={this._isRowLoaded}
       //   loadMoreRows={this._loadMoreRows}
@@ -495,6 +543,7 @@ BrowserTable.propTypes = {
   ).isRequired,
   isDragActive: PropTypes.bool,
   searchTerms: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired,
   headerHeight: PropTypes.number,
   onRowClick: PropTypes.func,
   onDeleteClick: PropTypes.func,

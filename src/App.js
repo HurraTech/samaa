@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -662,11 +663,8 @@ const App = (props) => {
         <div className={classes.drawerHeader} />
         <Routes>
           <Route exact={true} path="/" element={<HomePage apps={apps} sources={sources} stats={stats} />}/> 
-          <Route path="/(browse|browse/preview)/sources/:sourceType/:sourceID/:path/*" render={({match}) =>
-                    (<BrowserPage sourceType={match.params.sourceType}
-                                  sourceID={match.params.sourceID}
-                                  source={sources.filter(s => s.Type == match.params.sourceType && s.ID == match.params.sourceID)[0]}
-                                  path={`sources/${match.params.sourceType}/${match.params.sourceID}/${match.params.path || ""}/`} />)}/>
+          <Route path="/browse/preview?/sources/:sourceType/:sourceID/:path?/" element={<BrowserPageWrapper sources={sources} />} />
+          {/* <Route path="/(browse|browse/preview)/sources/:sourceType/:sourceID/:path?/" element={<BrowserPageWrapper sources={sources} />} /> */}
 
           <Route path="/search/:sourceType/:sourceID/:action?" render={ ({match}) =>
                     (<SearchPage sources={sources}
@@ -689,13 +687,22 @@ const App = (props) => {
             />
           )}/>
 
-          <Route path="/manage" render={() => (<SettingsPage sources={sources} drives={drives} />)}/>
+          <Route path="/manage" element={<SettingsPage sources={sources} drives={drives} />} />
           <Route path="/appStore" render={() => (<AppStorePage sources={sources} />)}/>
           <Route path="/apps/:auid+" render={({match}) => (<AppLoader auid={match.params.auid} />)}/>
         </Routes>
       </main>
     </Root>
   );
+}
+
+const BrowserPageWrapper = (props) => {
+  let params = useParams();
+  return (
+    <BrowserPage sourceType={params.sourceType}
+      sourceID={params.sourceID}
+      source={props.sources.filter(s => s.Type == params.sourceType && s.ID == params.sourceID)[0]}
+      path={`sources/${params.sourceType}/${params.sourceID}/${params.path || ""}/`} />)
 }
 
 // App.propTypes = {

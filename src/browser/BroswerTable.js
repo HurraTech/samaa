@@ -5,14 +5,6 @@ import { withStyles, withTheme } from '@mui/styles';
 import TableCell from '@mui/material/TableCell';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { TableVirtuoso } from 'react-virtuoso'
-
-// import {
-//   AutoSizer,
-//   Column,
-//   SortDirection,
-//   Table,
-//   InfiniteLoader,
-// } from 'react-virtualized';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Moment from 'react-moment';
@@ -127,7 +119,6 @@ class BrowserTable extends React.PureComponent {
   ) => {
     const { columns, classes, rowHeight, onRowClick, onDeleteClick, theme } = this.props;
     const { primary, secondary } = theme.palette.text;
-    console.log(cellType, cellData)
     if (!cellData) {
       return (
         <TableCell
@@ -204,7 +195,7 @@ class BrowserTable extends React.PureComponent {
             style={{ height: rowHeight }}
             padding="none"
           >
-            <Tooltip title="Donwload File">
+            <Tooltip title="Download File">
               <IconButton href={`${JAWHAR_API}${cellData.Path}` } download>
                 <DownloadIcon color="inherit" color="primary" />
               </IconButton>
@@ -449,7 +440,6 @@ class BrowserTable extends React.PureComponent {
               index,
             ) => {
               const renderer = this.cellRenderer(content);
-              console.log(file)
               return (<td>{renderer(file, file, file)}</td>)
               //   <Column
               //     key={dataKey}

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useRef, useEffect, useState, useReducer} from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import Paper from '@mui/material/Paper';
@@ -69,18 +70,43 @@ const Root = styled('span')((
   }
 }));
 
-class BrowserPage extends React.Component {
-  constructor(props) {
-    super(props);
-    var path = props.path
-    if (window.location.pathname.startsWith("/browse/preview")) {
-      if (path.charAt(path.length - 1) == "/") 
-        path = path.substr(0, path.length - 1);
-      path = path.substring(0, path.lastIndexOf("/"))
-    }
-    console.log("Initial path is ", path)
+const BrowserPage = (props) => {
 
-    this.state = {
+// class BrowserPage extends React.Component {
+  // constructor(props) {
+    // super(props);
+    // var path = props.path
+    // if (window.location.pathname.startsWith("/browse/preview")) {
+    //   if (path.charAt(path.length - 1) == "/") 
+    //     path = path.substr(0, path.length - 1);
+    //   path = path.substring(0, path.lastIndexOf("/"))
+    // }
+    // console.log("Initial path is ", path)
+    // state = {
+    //   error: "",
+    //   isInstantSearchEnabled: false,
+    //   isPreviewOpen: false,
+    //   isLoaded: false,
+    //   previewedContent: [],
+    //   openedFile: '',
+    //   isInlineViewerOpen: false,
+    //   previewedTitle: '',
+    //   isAjaxInProgress: false,
+    //   path: path,
+    //   requestedItem: null,
+    //   deleteConfirmDialog: false,
+    //   selectedItem: {},
+    //   items: [],
+    //   searchTerms: [],
+    // };
+  // }
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const [pendingRequest, setPendingRequest] = useState({ inProgress: false })
+  const [state, setState] = useReducer(
+    (state, newState) => ({...state, ...newState}),
+    {
       error: "",
       isInstantSearchEnabled: false,
       isPreviewOpen: false,
@@ -90,114 +116,123 @@ class BrowserPage extends React.Component {
       isInlineViewerOpen: false,
       previewedTitle: '',
       isAjaxInProgress: false,
-      path: path,
+      path: location.pathname,
       requestedItem: null,
       deleteConfirmDialog: false,
       selectedItem: {},
       items: [],
-
       searchTerms: [],
-    };
-  }
+    }
+  )
 
-  handlePreviewCloseClick() {
-    let backPath = this.state.path.substring(0, this.state.path.lastIndexOf("/"))
+  const didMountRef = useRef(false)
+  useEffect(() => {
+    if (didMountRef.current) {
+      componentDidUpdate()
+    } else {
+      didMountRef.current = true
+      browse();
+    }
+  })
+
+  useEffect(() => {
+    browse()
+  }, [location]);
+
+  
+  const handlePreviewCloseClick = () => {
+    let backPath = state.path.substring(0, state.path.lastIndexOf("/"))
     console.log("Closing preview, going to this path", backPath)
-    this.setState({
+    setState({
       isPreviewOpen: false,
       isInlineViewerOpen: false,
       openedFile: '',
       path: backPath
     });
-    this.props.history.goBack()
+    navigate(-1)
 
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.path !== prevProps.path && !window.location.pathname.startsWith("/browse/preview")) {
-      this.setState({
-        path: this.props.path
-      }, () => {
-        console.log("Going to ", this.state.path)
-        this.browse()
-      })
-    }
+  const componentDidUpdate = (prevProps) => {
+    // if (props.path !== prevProps.path && !window.location.pathname.startsWith("/browse/preview")) {
+    //   setState({
+    //     path: props.path
+    //   }, () => {
+    //     console.log("Going to ", state.path)
+    //     this.browse()
+    //   })
+    // }
   }
 
-  handlePreviewClick = index => {
+  const handlePreviewClick = index => {
     const highlighted_content =
-      this.state.items[index].highlight &&
-      this.state.items[index].highlight.content
-        ? this.state.items[index].highlight.content
+      state.items[index].highlight &&
+      state.items[index].highlight.content
+        ? state.items[index].highlight.content
         : null;
 
     const full_content =
-      this.state.items[index]._source.content &&
-      this.state.items[index]._source.content.trim() != ''
-        ? [this.state.items[index]._source.content.trim()]
+      state.items[index]._source.content &&
+      state.items[index]._source.content.trim() != ''
+        ? [state.items[index]._source.content.trim()]
         : null;
     const preview_content = highlighted_content || full_content;
 
     if (preview_content) {
-      this.setState({
+      setState({
         isPreviewOpen: true,
         isInlineViewerOpen: false,
-        openedFile: `${this.state.path}/${this.state.items[index].name}`,
+        openedFile: `${state.path}/${state.items[index].name}`,
         previewedContent: preview_content,
-        previewedTitle: this.state.items[index]._source.file.filename,
+        previewedTitle: state.items[index]._source.file.filename,
       });
     }
   };
 
-  handleFilenameClick = index => {
-    const is_dir = this.state.items[index].IsDir;
-    const path = is_dir ? "/browse" + this.state.items[index].Path : "/browse/preview" + this.state.items[index].Path
+  const handleFilenameClick = item => {
+
+    const is_dir = item.IsDir;
+    const path = is_dir ? "/browse" + item.Path : "/browse/preview" + item.Path
     if (path == "..")
     {
       // Going one level up
-      console.log("Going level up from ", this.state.path)
-      path = this.state.path.substring(0, this.state.path.lastIndexOf("/"))
+      console.log("Going level up from ", state.path)
+      path = state.path.substring(0, state.path.lastIndexOf("/"))
     }
     console.log(`Clicked on ${path}`)
 
-    this.props.history.push({ pathname: path});
+    navigate({ pathname: path});
   };
 
-  handleDeleteClick = index => {
-    console.log("Dialog to delete ", this.state.items[index])
-    this.setState({
-      selectedItem: this.state.items[index],
+  const handleDeleteClick = item => {
+    console.log("Dialog to delete ", item)
+    setState({
+      selectedItem: item,
       deleteConfirmDialog: true
-    }, () => {
-      console.log("SELECTED ITEM SET TO ", this.state.selectedItem)
     })
   }
 
-  cancelDelete() {
-    this.setState({
+  const cancelDelete = () => {
+    setState({
       deleteConfirmDialog: false,
       selectedItem: {},
     })
   }
 
-  confirmDelete() {
-    console.log("Deleting", this.state.selectedItem.Path)
-    axios.delete(`${JAWHAR_API}/${this.state.selectedItem.Path}`).then(res => {
-      this.setState({
+  const confirmDelete = () => {
+    console.log("Deleting", state.selectedItem.Path)
+    axios.delete(`${JAWHAR_API}/${state.selectedItem.Path}`).then(res => {
+      setState({
         selectedItem: {},
         deleteConfirmDialog: false,
       })
-      this.browse()
+      browse()
     })
 
 
   }
 
-  componentDidMount() {
-    this.browse();
-  }
-
-  uploadFiles(files) {
+  const uploadFiles = (files) => {
    for (var file of files) {
      console.log(`Uploading  :  ${file.path}`)
 
@@ -209,7 +244,7 @@ class BrowserPage extends React.Component {
        var formData = new FormData();
        formData.append("file", reader.result);
 
-       axios.post(`${JAWHAR_API}/${this.props.path}${file.path}`, formData,
+       axios.post(`${JAWHAR_API}/${props.path}${file.path}`, formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -220,161 +255,155 @@ class BrowserPage extends React.Component {
       var formData = new FormData();
       formData.append("file", file);
 
-      axios.post(`${JAWHAR_API}/${this.props.path}${file.path}`, formData,
+      axios.post(`${JAWHAR_API}/${props.path}${file.path}`, formData,
       {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }).then(res => {
-        this.browse()
+        browse()
       })
     }
   }
 
-  browse() {
-    return new Promise((resolve, reject) => {
-      this.setState({isAjaxInProgress: true}, () => {
-        console.log("Making request to ", JAWHAR_API, this.state.path)
-        axios.get(`${JAWHAR_API}/${this.state.path}`).then(res => {
-          const response = res.data;
-          console.log("Response", response)
-          this.setState(
-            {
-              items: response.content || [],
-              isInlineViewerOpen: false,
-              isPreviewOpen: false,
-              isAjaxInProgress: false
-            },
-            () => {
-              resolve(response.content);
-            },
-          );
-        }).catch((error) => {
-          var msg = ""
-          var additionalInfo = ""
-          var partitionName = this.props.source.Caption
-          var path = this.state.path.replace(`sources/${this.props.sourceType}/${this.props.sourceID}`, partitionName)
-          if (error.response && error.response.status == 401) {
-            msg = ": Access Denied"
-            additionalInfo = " - make sure files in the partition are readable"
-          }
-          this.setState(
-            {
-              items: [],
-              error: `<strong>Could not view requested ${path} ${msg}</strong>${additionalInfo}`,
-              isInlineViewerOpen: false,
-              isPreviewOpen: false,
-              isAjaxInProgress: false
-            },
-            () => {
-              resolve([]);
-            })
-        });
-      })
-    });
+  const browse = () => {
+      console.log("Set pending request to ", JAWHAR_API, location.pathname)
+      setPendingRequest({inProgress: true, requestPath: `${JAWHAR_API}/${location.pathname}`})
   }
 
-  render() {
-    const { } = this.props;
-    const { items } = this.state;
-    return (
-      <Root>
-          {this.state.error != "" &&
-            <Alert severity="error" className={classes.error}> <div dangerouslySetInnerHTML={{__html: this.state.error}} /></Alert>}
+  useEffect(() => {
+    if (pendingRequest.inProgress) {
+      console.log("Making request to ", pendingRequest.requestPath.replace("/browse", ""))
+      axios.get(`${pendingRequest.requestPath.replace("/browse", "")}`).then(res => {
+        const response = res.data;
+        console.log("Response", response)
+        setState({
+          items: response.content || [],
+          isInlineViewerOpen: false,
+          isPreviewOpen: false});
+      }).catch((error) => {
+        var msg = ""
+        var additionalInfo = ""
+        var partitionName = props.source.Caption
+        var path = state.path.replace(`sources/${props.sourceType}/${props.sourceID}`, partitionName)
+        if (error.response && error.response.status == 401) {
+          msg = ": Access Denied"
+          additionalInfo = " - make sure files in the partition are readable"
+        }
+        setPendingRequest({inProgress: false})
+        setState(
+          {
+            items: [],
+            error: `<strong>Could not view requested ${path} ${msg}</strong>${additionalInfo}`,
+            isInlineViewerOpen: false,
+            isPreviewOpen: false,
+          })
+      });
+    }
 
-        <Dialog
-          open={this.state.deleteConfirmDialog}
-          onClose={this.cancelDelete.bind(this)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          {this.state.deleteConfirmDialog && (<>
-          <DialogTitle id="alert-dialog-title">{"Delete File(s)?"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete <b>{this.state.selectedItem.Path.replace(/^.*[\\\/]/, '')}</b>? This cannot be undone.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.cancelDelete.bind(this)} color="primary" autoFocus>
-              Cancel
-            </Button>
-            <Button onClick={this.confirmDelete.bind(this)} color="primary">
-              Yes
-            </Button>
-          </DialogActions></>)
-          }
-        </Dialog>
+  }, [pendingRequest]);
+
+      
 
 
-        <Paper className={classes.paper}>
-          <div className={classes.contentWrapper}>
-          <Dropzone onDrop={acceptedFiles => this.uploadFiles(acceptedFiles)}>
-            {({getRootProps, getInputProps, isDragActive}) => (
-                <div {...getRootProps()} style={{height: "100%"}}>
-                  {/* <input {...getInputProps()} /> */}
-                  <Backdrop open={isDragActive} style={{zIndex: 1000}}>
-                    <Typography variant="h4" component="h2" style={{color:"white"}}>
-                      Drop Here to Upload Files
-                    </Typography>
-                    </Backdrop>
-                  <BrowserTable
-                          rowCount={this.state.items.length}
-                          rowGetter={({ index }) => ({ file: items[index] })}
-                          onPreviewClick={this.handlePreviewClick}
-                          onFilenameClick={this.handleFilenameClick}
-                          classes={classes.table}
-                          data={items}
-                          searchTerms={this.state.searchTerms}
-                          onDeleteClick={this.handleDeleteClick}
-                          columns={[
-                            {
-                              width: 200,
-                              flexGrow: 1.0,
-                              label: 'File',
-                              dataKey: 'file',
-                              content: 'filename',
-                            },
-                            {
-                              width: 100,
-                              label: 'Size',
-                              dataKey: 'file',
-                              content: 'size',
-                              numeric: true,
-                            },
-                            {
-                              width: 150,
-                              label: 'Created',
-                              dataKey: 'file',
-                              content: 'created',
-                              numeric: true,
-                            },
-                            {
-                              width: 40,
-                              label: '',
-                              dataKey: 'file',
-                              content: 'downloadButton',
-                            },
-                            {
-                              width: 40,
-                              label: '',
-                              dataKey: 'file',
-                              content: 'deleteButton',
-                            },
+  const { items } = state;
+  return (
+    <Root>
+        {state.error != "" &&
+          <Alert severity="error" className={classes.error}> <div dangerouslySetInnerHTML={{__html: state.error}} /></Alert>}
 
-                          ]}
-                        />
-                </div>
-            )}
-          </Dropzone>
-          </div>
-        </Paper>
-        <div class={classes.progressWrapper}>{this.state.isAjaxInProgress && <ProgressIndicator />}</div>
-        <br/>
-        <Alert severity="info">Drag and Drop Files Above to Upload Files</Alert>
-        </Root>
-    );
-  }
+      <Dialog
+        open={state.deleteConfirmDialog}
+        onClose={cancelDelete.bind(this)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        {state.deleteConfirmDialog && (<>
+        <DialogTitle id="alert-dialog-title">{"Delete File(s)?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete <b>{state.selectedItem.Path.replace(/^.*[\\\/]/, '')}</b>? This cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDelete.bind(this)} color="primary" autoFocus>
+            Cancel
+          </Button>
+          <Button onClick={this.confirmDelete.bind(this)} color="primary">
+            Yes
+          </Button>
+        </DialogActions></>)
+        }
+      </Dialog>
+
+
+      <Paper className={classes.paper}>
+        <div className={classes.contentWrapper}>
+        <Dropzone onDrop={acceptedFiles => this.uploadFiles(acceptedFiles)}>
+          {({getRootProps, getInputProps, isDragActive}) => (
+              <div {...getRootProps()} style={{height: "100%"}}>
+                {/* <input {...getInputProps()} /> */}
+                <Backdrop open={isDragActive} style={{zIndex: 1000}}>
+                  <Typography variant="h4" component="h2" style={{color:"white"}}>
+                    Drop Here to Upload Files
+                  </Typography>
+                  </Backdrop>
+                <BrowserTable
+                        rowCount={state.items.length}
+                        rowGetter={({ index }) => ({ file: items[index] })}
+                        onPreviewClick={handlePreviewClick}
+                        onFilenameClick={handleFilenameClick}
+                        classes={classes.table}
+                        data={items}
+                        searchTerms={state.searchTerms}
+                        onDeleteClick={handleDeleteClick}
+                        columns={[
+                          {
+                            width: 200,
+                            flexGrow: 1.0,
+                            label: 'File',
+                            dataKey: 'file',
+                            content: 'filename',
+                          },
+                          {
+                            width: 100,
+                            label: 'Size',
+                            dataKey: 'file',
+                            content: 'size',
+                            numeric: true,
+                          },
+                          {
+                            width: 150,
+                            label: 'Created',
+                            dataKey: 'file',
+                            content: 'created',
+                            numeric: true,
+                          },
+                          {
+                            width: 40,
+                            label: '',
+                            dataKey: 'file',
+                            content: 'downloadButton',
+                          },
+                          {
+                            width: 40,
+                            label: '',
+                            dataKey: 'file',
+                            content: 'deleteButton',
+                          },
+
+                        ]}
+                      />
+              </div>
+          )}
+        </Dropzone>
+        </div>
+      </Paper>
+      <div className={classes.progressWrapper}>{state.isAjaxInProgress && <ProgressIndicator />}</div>
+      <br/>
+      <Alert severity="info">Drag and Drop Files Above to Upload Files</Alert>
+      </Root>
+  );
 }
 
 BrowserPage.propTypes = {
@@ -382,4 +411,4 @@ BrowserPage.propTypes = {
 };
 
 
-export default withRoute((BrowserPage));
+export default withRoute(BrowserPage);

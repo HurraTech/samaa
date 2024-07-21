@@ -126,7 +126,7 @@ class BrowserTable extends React.PureComponent {
           className={classNames(classes.tableCell, classes.flexContainer)}
           variant="body"
           style={{ height: rowHeight }}
-          href={cellData.open_link ? cellData.open_link : ""}
+          href={cellData.open_link ? cellData.open_link : null}
           onClick={() => { if (!cellData.open_link) this.props.onFilenameClick(rowIndex)} }
         >
           <div className={classes.placeholder} style={{ width: 200 }} />
@@ -149,7 +149,7 @@ class BrowserTable extends React.PureComponent {
               height: rowHeight,
               color: cellData.Name == '..' ? '#960000' : 'black',
             }}
-            href={cellData.open_link ? cellData.open_link : ""}
+            href={cellData.open_link ? cellData.open_link : null}
             target="_new"
             onClick={() => { if (!cellData.open_link) { this.props.onFilenameClick(rowIndex)}  }}
 

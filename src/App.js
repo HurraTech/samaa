@@ -663,7 +663,7 @@ const App = (props) => {
         <div className={classes.drawerHeader} />
         <Routes>
           <Route exact={true} path="/" element={<HomePage apps={apps} sources={sources} stats={stats} />}/> 
-          <Route path="/browse/preview?/sources/:sourceType/:sourceID/:path?/" element={<BrowserPageWrapper sources={sources} />} />
+          <Route path="/browse/preview?/sources/:sourceType/:sourceID/*" element={<BrowserPageWrapper sources={sources} />} />
           {/* <Route path="/(browse|browse/preview)/sources/:sourceType/:sourceID/:path?/" element={<BrowserPageWrapper sources={sources} />} /> */}
 
           <Route path="/search/:sourceType/:sourceID/:action?" render={ ({match}) =>
@@ -702,7 +702,7 @@ const BrowserPageWrapper = (props) => {
     <BrowserPage sourceType={params.sourceType}
       sourceID={params.sourceID}
       source={props.sources.filter(s => s.Type == params.sourceType && s.ID == params.sourceID)[0]}
-      path={`sources/${params.sourceType}/${params.sourceID}/${params.path || ""}/`} />)
+      path={`sources/${params.sourceType}/${params.sourceID}/${params["*"] || ""}/`} />)
 }
 
 // App.propTypes = {

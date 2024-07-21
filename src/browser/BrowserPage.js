@@ -266,6 +266,8 @@ const BrowserPage = (props) => {
     }
   }
 
+  const appendSuffix = (string) => string.endsWith("/") ? string : `${string}/`
+
   const browse = () => {
       console.log("Set pending request to ", JAWHAR_API, location.pathname)
       setPendingRequest({inProgress: true, requestPath: `${JAWHAR_API}/${location.pathname}`})
@@ -273,8 +275,8 @@ const BrowserPage = (props) => {
 
   useEffect(() => {
     if (pendingRequest.inProgress) {
-      console.log("Making request to ", pendingRequest.requestPath.replace("/browse", ""))
-      axios.get(`${pendingRequest.requestPath.replace("/browse", "")}`).then(res => {
+      console.log("Making request to ", appendSuffix(pendingRequest.requestPath.replace("/browse", "")))
+      axios.get(`${appendSuffix(pendingRequest.requestPath.replace("/browse", ""))}`).then(res => {
         const response = res.data;
         console.log("Response", response)
         setState({

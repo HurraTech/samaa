@@ -429,7 +429,7 @@ class SearchResultsTable extends React.PureComponent {
             ) => {
               console.log("file is ", file)
               const renderer = this.cellRenderer(content);
-              return (<td>{renderer(file, file, file)}</td>)
+              return (<>{renderer(file, file, file)}</>)
             },
           )}
 

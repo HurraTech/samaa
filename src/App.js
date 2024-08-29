@@ -673,13 +673,7 @@ const App = (props) => {
           {/* <Route path="/(browse|browse/preview)/sources/:sourceType/:sourceID/:path?/" element={<BrowserPageWrapper sources={sources} />} /> */}
 
           <Route path="/search/:sourceType/:sourceID/" element={<SearchPageWrapper sources={sources} />} />
-          <Route path="/search/:sourceType/:sourceID/preview/:path+" render={({match}) => (
-            <FilePreview
-              open={true}
-              onCloseClick={() => props.history.goBack()}
-              file={match.params.path}
-            />
-          )}/>
+          <Route path="/search/:sourceType/:sourceID/preview/*" element={<FilePreviewWrapper open={true} />}/>
 
           <Route path="/browse/preview/:path+" render={({match}) => (
             <FilePreview
@@ -713,6 +707,17 @@ const SearchPageWrapper = (props) => {
     <SearchPage sources={props.sources} 
         selectSourceType={params.sourceType}
         selectSourceID={params.sourceID} />
+  )
+}
+
+const FilePreviewWrapper = (props) => {
+  let params = useParams();
+  const navigate = useNavigate()
+  return (
+    <FilePreview
+    open={true}
+    onCloseClick={() => navigate(-1) }
+    file={params["*"]} />
   )
 }
 

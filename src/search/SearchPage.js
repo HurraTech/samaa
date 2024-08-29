@@ -163,9 +163,9 @@ const Content = (props) => {
     }
   };
 
-  const handleFilenameClick = index => {
-    const path = state.items[index].Path;
-    navigate({ pathname: `/search/${this.props.selectSourceType}/${this.props.selectSourceID}/preview${path}`, search: this.props.location.search});
+  const handleFilenameClick = file => {
+    const path = file.Path;
+    navigate({ pathname: `/search/${props.selectSourceType}/${props.selectSourceID}/preview${path}`, search: location.search});
   };
 
   const didMountRef = useRef(false)

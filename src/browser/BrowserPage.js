@@ -305,9 +305,6 @@ const BrowserPage = (props) => {
 
   }, [pendingRequest]);
 
-      
-
-
   const { items } = state;
   return (
     <Root>

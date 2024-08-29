@@ -21,6 +21,7 @@ import OpenIcon from '@mui/icons-material/OpenInNew';
 import DownloadIcon from '@mui/icons-material/GetApp';
 import FilterIcon from '@mui/icons-material/FilterList';
 import { JAWHAR_API  } from '../constants';
+import { TableVirtuoso } from 'react-virtuoso'
 
 const STATUS_LOADING = 1;
 const STATUS_LOADED = 2;
@@ -109,13 +110,14 @@ class SearchResultsTable extends React.PureComponent {
     });
   };
 
-  cellRenderer = cellType => ({
+  cellRenderer = cellType => (
     cellData,
     columnIndex = null,
     rowIndex,
     row,
-  }) => {
+  ) => {
     const { columns, classes, rowHeight, onRowClick } = this.props;
+    console.log("cellData is", cellData)
     if (!cellData) {
       return (
         <TableCell
@@ -402,8 +404,39 @@ class SearchResultsTable extends React.PureComponent {
   }
 
   render() {
-    const { classes, columns, rowCount, ...tableProps } = this.props;
-    return (<div></div>);
+    const { classes, columns, data, rowCount, ...tableProps } = this.props;
+    return (<TableVirtuoso
+      style={{ height: 400 }}
+      data={data}
+      fixedHeaderContent={() => (
+        <tr>
+          <th style={{ width: 150, background: 'white' }}>Name</th>
+          <th style={{ background: 'white' }}>Description</th>
+        </tr>
+      )}
+      itemContent={(index, file) => (
+        <>
+          {columns.map(
+            (
+              {
+                cellContentRenderer = null,
+                className,
+                dataKey,
+                content,
+                ...other
+              },
+              index,
+            ) => {
+              console.log("file is ", file)
+              const renderer = this.cellRenderer(content);
+              return (<>{renderer(file, file, file)}</>)
+            },
+          )}
+
+        </>
+      )}
+    />)
+    
       // <InfiniteLoader
       //   isRowLoaded={this._isRowLoaded}
       //   loadMoreRows={this._loadMoreRows}
@@ -467,6 +500,7 @@ class SearchResultsTable extends React.PureComponent {
 
 SearchResultsTable.propTypes = {
   classes: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
   columns: PropTypes.arrayOf(
     PropTypes.shape({
       cellContentRenderer: PropTypes.func,

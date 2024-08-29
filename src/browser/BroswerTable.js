@@ -14,6 +14,7 @@ import DownloadIcon from '@mui/icons-material/GetApp';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterIcon from '@mui/icons-material/FilterList';
 import { JAWHAR_API  } from '../constants';
+import clsx from 'clsx';
 
 const STATUS_LOADING = 1;
 const STATUS_LOADED = 2;
@@ -46,8 +47,9 @@ const styles = theme => ({
     flex: 1,
   },
   tableHeader: {
+    width: "100%",
     flex: 1,
-    backgroundColor: theme.palette.grey[800],
+    backgroundColor: "black",
     color: 'white',
   },
   filterIcon: {
@@ -122,7 +124,7 @@ class BrowserTable extends React.PureComponent {
     if (!cellData) {
       return (
         <TableCell
-          component="div"
+          component="td"
           className={classNames(classes.tableCell, classes.flexContainer)}
           variant="body"
           style={{ height: rowHeight }}
@@ -187,7 +189,7 @@ class BrowserTable extends React.PureComponent {
           );
         return (
           <TableCell
-            component="div"
+            component="td"
             className={classNames(classes.tableCell, classes.flexContainer, {
               [classes.noClick]: onRowClick == null,
             })}
@@ -217,7 +219,7 @@ class BrowserTable extends React.PureComponent {
 
           return (
             <TableCell
-              component="div"
+              component="td"
               className={classNames(classes.tableCell, classes.flexContainer, {
                 [classes.noClick]: onRowClick == null,
               })}
@@ -236,7 +238,7 @@ class BrowserTable extends React.PureComponent {
       case 'openButton': {
         return (
           <TableCell
-            component="div"
+            component="td"
             className={classNames(classes.tableCell, classes.flexContainer, {
               [classes.noClick]: onRowClick == null,
             })}
@@ -258,7 +260,7 @@ class BrowserTable extends React.PureComponent {
       case 'size': {
         return (
           <TableCell
-            component="div"
+            component="td"
             className={classNames(classes.tableCell, classes.flexContainer, {
               [classes.noClick]: onRowClick == null,
             })}
@@ -275,7 +277,7 @@ class BrowserTable extends React.PureComponent {
       case 'created': {
         return (
           <TableCell
-            component="div"
+            component="td"
             className={classNames(classes.tableCell, classes.flexContainer, {
               [classes.noClick]: onRowClick == null,
             })}
@@ -291,54 +293,55 @@ class BrowserTable extends React.PureComponent {
     }
   };
 
-  // headerRenderer = ({ label, columnIndex, dataKey, sortBy, sortDirection }) => {
-  //   const { headerHeight, columns, classes, sort } = this.props;
-  //   const direction = {
-  //     [SortDirection.ASC]: 'asc',
-  //     [SortDirection.DESC]: 'desc',
-  //   };
+  headerRenderer = (label, columnIndex, dataKey, sortBy, sortDirection ) => {
+    const { headerHeight, columns, classes, sort } = this.props;
+    // const direction = {
+    //   [SortDirection.ASC]: 'asc',
+    //   [SortDirection.DESC]: 'desc',
+    // };
+    console.log(label, columnIndex, dataKey, sortBy, sortDirection)
 
-  //   const filterIcon =
-  //     columnIndex == 0 ? (
-  //       <IconButton>
-  //         <div className={classes.filterIcon}>
-  //           <Tooltip title="Filter Results">
-  //             <FilterIcon />
-  //           </Tooltip>
-  //         </div>
-  //       </IconButton>
-  //     ) : (
-  //       ''
-  //     );
+    const filterIcon =
+      columnIndex == 0 ? (
+        <IconButton>
+          <div className={classes.filterIcon}>
+            <Tooltip title="Filter Results">
+              <FilterIcon />
+            </Tooltip>
+          </div>
+        </IconButton>
+      ) : (
+        ''
+      );
 
-  //   const inner =
-  //     !columns[columnIndex].disableSort && sort != null ? (
-  //       <TableSortLabel
-  //         active={dataKey === sortBy}
-  //         direction={direction[sortDirection]}
-  //       >
-  //         {[filterIcon, label]}
-  //       </TableSortLabel>
-  //     ) : (
-  //       [label]
-  //     );
+    const inner =
+      !columns[columnIndex].disableSort && sort != null ? (
+        <TableSortLabel
+          active={dataKey === sortBy}
+          direction={sortDirection}
+        >
+          {[filterIcon, label]}
+        </TableSortLabel>
+      ) : (
+        [label]
+      );
 
-  //   return (
-  //     <TableCell
-  //       component="div"
-  //       className={classNames(
-  //         classes.tableHeader,
-  //         classes.flexContainer,
-  //         classes.noClick,
-  //       )}
-  //       variant="head"
-  //       style={{ height: headerHeight }}
-  //       align={columns[columnIndex].numeric || false ? 'right' : 'left'}
-  //     >
-  //       {inner}
-  //     </TableCell>
-  //   );
-  // };
+    return (
+      <TableCell
+        component="td"
+        className={clsx(
+          classes.tableHeader,
+          classes.flexContainer,
+          classes.noClick,
+        )}
+        variant="head"
+        style={{ height: headerHeight, color: "white" }}
+        align={columns[columnIndex].numeric || false ? 'right' : 'left'}
+      >
+        {inner}
+      </TableCell>
+    );
+  };
 
   _isRowLoaded({ index }) {
     // const { loadedRowsMap } = this.state;
@@ -421,11 +424,22 @@ class BrowserTable extends React.PureComponent {
       style={{ height: 400 }}
       data={data}
       fixedHeaderContent={() => (
-        <tr>
-          <th style={{ width: 150, background: 'white' }}>Name</th>
-          <th style={{ background: 'white' }}>Description</th>
-        </tr>
+        <>
+        {columns.map(
+          (
+            {
+              label,
+              className,
+              dataKey,
+              content,
+              ...other
+            },
+            index,
+          ) => {
+            return (<>{this.headerRenderer(label, index, dataKey, dataKey, "desc")}</>)
+          }
       )}
+      </>)}
       itemContent={(index, file) => (
         <>
           {columns.map(
@@ -440,7 +454,7 @@ class BrowserTable extends React.PureComponent {
               index,
             ) => {
               const renderer = this.cellRenderer(content);
-              return (<td>{renderer(file, file, file)}</td>)
+              return (<>{renderer(file, file, file)}</>)
               //   <Column
               //     key={dataKey}
               //     headerRenderer={headerProps =>

@@ -57,10 +57,12 @@ import { JAWHAR_API  } from './constants';
 import FilePreview from './components/FilePreview';
 import Tooltip from '@mui/material/Tooltip';
 import withRoute from "./withRoute";
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const generateClassName = createGenerateClassName();
 
 const drawerWidth = 240;
+
 
 const PREFIX = 'App';
 const classes = {
@@ -287,6 +289,9 @@ const App = (props) => {
   const theme = useTheme();
   let refreshDataTimer = null;
 
+  const navigate = useNavigate()
+  const location = useLocation()
+
   const handleDrawerOpen = () => {
     setOpen(true)
   };
@@ -372,10 +377,11 @@ const App = (props) => {
 
   const onSearchBarKeyPress = event => {
     if (event.key === 'Enter') {
-      let searchable = sources.filter(s => s.Status == "mounted" && s.IndexStatus != "")
+      // let searchable = sources.filter(s => s.Status == "mounted" && s.IndexStatus != "")
+      let searchable = sources.filter(s => s.IndexStatus != "")
 
       if (searchable.length > 0) {
-        props.history.push({
+        navigate({
           pathname: `/search/${searchable[0].Type}/${searchable[0].ID}`,
           search: `q=${event.target.value}`,
         });
@@ -666,18 +672,8 @@ const App = (props) => {
           <Route path="/browse/preview?/sources/:sourceType/:sourceID/*" element={<BrowserPageWrapper sources={sources} />} />
           {/* <Route path="/(browse|browse/preview)/sources/:sourceType/:sourceID/:path?/" element={<BrowserPageWrapper sources={sources} />} /> */}
 
-          <Route path="/search/:sourceType/:sourceID/:action?" render={ ({match}) =>
-                    (<SearchPage sources={sources}
-                                selectSourceType={match.params.sourceType}
-                                selectSourceID={match.params.sourceID} />) } />
-
-          <Route path="/search/:sourceType/:sourceID/preview/:path+" render={({match}) => (
-            <FilePreview
-              open={true}
-              onCloseClick={() => props.history.goBack()}
-              file={match.params.path}
-            />
-          )}/>
+          <Route path="/search/:sourceType/:sourceID/" element={<SearchPageWrapper sources={sources} />} />
+          <Route path="/search/:sourceType/:sourceID/preview/*" element={<FilePreviewWrapper open={true} />}/>
 
           <Route path="/browse/preview/:path+" render={({match}) => (
             <FilePreview
@@ -703,6 +699,26 @@ const BrowserPageWrapper = (props) => {
       sourceID={params.sourceID}
       source={props.sources.filter(s => s.Type == params.sourceType && s.ID == params.sourceID)[0]}
       path={`sources/${params.sourceType}/${params.sourceID}/${params["*"] || ""}/`} />)
+}
+
+const SearchPageWrapper = (props) => {
+  let params = useParams();
+  return (
+    <SearchPage sources={props.sources} 
+        selectSourceType={params.sourceType}
+        selectSourceID={params.sourceID} />
+  )
+}
+
+const FilePreviewWrapper = (props) => {
+  let params = useParams();
+  const navigate = useNavigate()
+  return (
+    <FilePreview
+    open={true}
+    onCloseClick={() => navigate(-1) }
+    file={params["*"]} />
+  )
 }
 
 // App.propTypes = {
